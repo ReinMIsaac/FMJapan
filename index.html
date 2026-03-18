@@ -5,32 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FamilyMart in China: Partnership Dashboard</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- React & Dependencies (Stable Versions) -->
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js"></script>
-    <script crossorigin src="https://unpkg.com/recharts@2.10.3/umd/Recharts.js"></script>
+    <!-- React & ReactDOM (Highly Stable CDNJS Versions) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    
+    <!-- PropTypes (Required for Recharts) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js"></script>
+    
+    <!-- Recharts (Locked to stable 2.1.9 for guaranteed browser compatibility) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.1.9/Recharts.js"></script>
+
+    <!-- Babel for in-browser JSX transpilation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
 
+    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .loading-screen { display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; color: #475569; }
+        
+        /* Map specific styling */
         .china-map-bg {
+            /* Points to your downloaded map image in the same folder */
             background-image: url('./china-map.jpg');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
         }
+        
+        /* Custom scrollbar for better look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body>
+    
+    <!-- React App Root -->
     <div id="root">
         <div class="loading-screen">
             <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-[#00A54F]"></i>
@@ -38,42 +56,17 @@
         </div>
     </div>
 
+    <!-- React Application Code -->
     <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        function App() {
-            const [activeTab, setActiveTab] = useState('overview');
-            const [lang, setLang] = useState('EN');
-            const [libsLoaded, setLibsLoaded] = useState(false);
-
-            // Wait for Recharts to be available on window
-            useEffect(() => {
-                const checkLibs = setInterval(() => {
-                    if (window.Recharts) {
-                        setLibsLoaded(true);
-                        clearInterval(checkLibs);
-                    }
-                }, 100);
-                return () => clearInterval(checkLibs);
-            }, []);
-
-            if (!libsLoaded) {
-                return (
-                    <div className="loading-screen">
-                        <i className="fas fa-circle-notch fa-spin text-4xl mb-4 text-[#00A54F]"></i>
-                        <h2 className="text-xl font-bold">Initializing Components...</h2>
-                    </div>
-                );
-            }
-
+        try {
+            // Use window explicitly to prevent ReferenceErrors
+            const { useState } = window.React;
             const { 
               BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
               PieChart, Pie, Cell, AreaChart, Area, ComposedChart
             } = window.Recharts;
 
-            const t = (en, th) => lang === 'EN' ? en : th;
-
-            // --- Data ---
+            // --- Data Extracts from the Case Study ---
             const marketGrowthData = [
               { year: '2016', stores: 94000, growth: 3 },
               { year: '2017', stores: 106000, growth: 13 },
@@ -109,6 +102,7 @@
               { name: 'Others', value: 10 },
             ];
 
+            // Exhibit 3: Joint Venture Ownership Structure
             const exhibit3Ownership = [
               { name: 'Ting Hsin Int. Group', value: 59.65, color: '#003882' },
               { name: 'FM China Holding (Japan/Itochu)', value: 22.05, color: '#00A54F' },
@@ -123,160 +117,586 @@
                 'Hongqi': '#8b5cf6',
                 'Others': '#9ca3af'
             };
+            const allBrands = ['FamilyMart', '7-Eleven', 'Lawson', 'Meiyijia', 'Hongqi', 'Others'];
 
-            return (
+            // --- Main Application Component ---
+            function App() {
+              const [activeTab, setActiveTab] = useState('overview');
+              const [lang, setLang] = useState('EN');
+
+              const t = (en, th) => lang === 'EN' ? en : th;
+
+              return (
                 <div className="min-h-screen p-4 md:p-8 max-w-[1400px] mx-auto text-slate-800">
+                  
+                  {/* Header Section */}
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <header>
                       <h1 className="text-3xl md:text-4xl font-black text-slate-900 flex items-center gap-3 mb-2 tracking-tight">
-                        <i className="fas fa-store text-[#00A54F]"></i>
+                        <i className="fas fa-store text-4xl text-[#00A54F]"></i>
                         {t("FamilyMart in China: Partnership Dashboard", "แดชบอร์ดวิเคราะห์ความร่วมมือ: แฟมิลี่มาร์ทในประเทศจีน")}
                       </h1>
+                      <p className="text-slate-500 text-lg max-w-3xl">
+                        {t("An interactive analysis of the 20-year international partnership divorce between FamilyMart Japan and Ting Hsin.", 
+                           "บทวิเคราะห์เชิงโต้ตอบเจาะลึกความขัดแย้งและการยุติความร่วมมือข้ามชาติกว่า 2 ทศวรรษ ระหว่าง FamilyMart Japan และ Ting Hsin")}
+                      </p>
                     </header>
-                    <div className="flex bg-white p-1 rounded-lg border border-slate-200 shadow-sm shrink-0">
-                      <button onClick={() => setLang('EN')} className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${lang === 'EN' ? 'bg-slate-100 text-blue-600' : 'text-slate-500'}`}>EN</button>
-                      <button onClick={() => setLang('TH')} className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${lang === 'TH' ? 'bg-slate-100 text-blue-600' : 'text-slate-500'}`}>TH</button>
+
+                    {/* Language Switcher */}
+                    <div className="flex bg-white p-1 rounded-lg border border-slate-200 items-center shrink-0 shadow-sm">
+                      <button 
+                        onClick={() => setLang('EN')}
+                        className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${lang === 'EN' ? 'bg-slate-100 text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
+                      >
+                        <i className="fas fa-language mr-2"></i>EN
+                      </button>
+                      <button 
+                        onClick={() => setLang('TH')}
+                        className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${lang === 'TH' ? 'bg-slate-100 text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
+                      >
+                        TH
+                      </button>
                     </div>
                   </div>
 
+                  {/* KPI Cards */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex items-center space-x-4">
-                      <div className="bg-green-50 p-4 rounded-xl text-[#00A54F]"><i className="fas fa-store text-2xl"></i></div>
-                      <div><p className="text-xs text-slate-500 font-semibold uppercase">{t("Stores (2019)", "สาขา (2019)")}</p><h3 className="text-3xl font-black">2,801</h3></div>
+                      <div className="bg-green-50 p-4 rounded-xl text-[#00A54F]">
+                        <i className="fas fa-store text-2xl"></i>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{t("FamilyMart CN Stores (2019)", "จำนวนสาขาในจีน (2019)")}</p>
+                        <h3 className="text-3xl font-black text-slate-800">2,801</h3>
+                        <p className="text-xs text-green-600 font-medium mt-1">{t("#1 Foreign Brand Market Share", "ส่วนแบ่งอันดับ 1 ในกลุ่มแบรนด์ต่างชาติ")}</p>
+                      </div>
                     </div>
+
                     <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex items-center space-x-4">
-                      <div className="bg-blue-50 p-4 rounded-xl text-blue-600"><i className="fas fa-yen-sign text-2xl"></i></div>
-                      <div><p className="text-xs text-slate-500 font-semibold uppercase">{t("Sales (2019)", "ยอดขาย (2019)")}</p><h3 className="text-3xl font-black">¥1.00B</h3></div>
+                      <div className="bg-blue-50 p-4 rounded-xl text-blue-600">
+                        <i className="fas fa-yen-sign text-2xl"></i>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{t("FamilyMart CN Sales (2019)", "ยอดขายในประเทศจีน (2019)")}</p>
+                        <h3 className="text-3xl font-black text-slate-800">{t("¥1.00B", "1.00 พันล้านหยวน")}</h3>
+                        <p className="text-xs text-blue-600 font-medium mt-1">{t("+5.7% YOY Growth", "เติบโต +5.7% (YOY)")}</p>
+                      </div>
                     </div>
+
                     <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex items-center space-x-4">
-                      <div className="bg-orange-50 p-4 rounded-xl text-orange-500"><i className="fas fa-chart-line text-2xl"></i></div>
-                      <div><p className="text-xs text-slate-500 font-semibold uppercase">{t("Market Size", "ขนาดตลาด")}</p><h3 className="text-3xl font-black">132k</h3></div>
+                      <div className="bg-orange-50 p-4 rounded-xl text-orange-500">
+                        <i className="fas fa-chart-line text-2xl"></i>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{t("China Market Size", "ขนาดตลาดจีนโดยรวม")}</p>
+                        <h3 className="text-3xl font-black text-slate-800">132,000</h3>
+                        <p className="text-xs text-orange-600 font-medium mt-1">{t("Total C-Stores in 2019", "จำนวนร้านสะดวกซื้อทั้งหมดในปี 2019")}</p>
+                      </div>
                     </div>
-                    <div className="bg-white rounded-xl shadow-sm border-l-4 border-l-red-500 p-6 flex items-center space-x-4">
-                      <div className="bg-red-50 p-4 rounded-xl text-red-600"><i className="fas fa-exclamation-triangle text-2xl"></i></div>
-                      <div><p className="text-xs text-slate-500 font-semibold uppercase">{t("Royalty Dispute", "ข้อพิพาทค่าสิทธิ์")}</p><h3 className="text-xl font-black text-red-700">1.0% vs 0.3%</h3></div>
+
+                    <div className="bg-white rounded-xl shadow-sm border-l-4 border-l-red-500 p-6 flex items-center space-x-4 relative overflow-hidden">
+                      <div className="absolute -right-4 -bottom-4 opacity-5 text-red-500">
+                        <i className="fas fa-gavel text-8xl"></i>
+                      </div>
+                      <div className="bg-red-50 p-4 rounded-xl text-red-600 z-10">
+                        <i className="fas fa-exclamation-triangle text-2xl"></i>
+                      </div>
+                      <div className="z-10">
+                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{t("Core Dispute: Royalty Fees", "ข้อพิพาทหลัก: ค่าลิขสิทธิ์")}</p>
+                        <h3 className="text-2xl font-black text-slate-800">{t("1.00% vs 0.30%", "1.00% เทียบกับ 0.30%")}</h3>
+                        <p className="text-[10px] text-red-600 font-medium mt-1 leading-tight">{t("FM's demanded rate vs. Ting Hsin's desired rate.", "อัตราที่แฟมิลี่มาร์ทเรียกเก็บ เทียบกับอัตราที่ Ting Hsin ขอ")}</p>
+                      </div>
                     </div>
                   </div>
 
+                  {/* Clean 1-Row Tabs Navigation */}
                   <div className="flex flex-wrap items-center gap-2 mb-8 bg-slate-200/50 p-1.5 rounded-xl border border-slate-200">
-                    {['overview', 'partners', 'strategy', 'dispute', 'resolution', 'presentation'].map(tkey => (
-                      <button key={tkey} onClick={() => setActiveTab(tkey)} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all ${activeTab === tkey ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>
-                        {t(tkey.charAt(0).toUpperCase() + tkey.slice(1), {overview: 'ตลาด', partners: 'พันธมิตร', strategy: 'กลยุทธ์', dispute: 'ไทม์ไลน์', resolution: 'บทสรุป', presentation: 'คู่มือนำเสนอ'}[tkey])}
-                      </button>
-                    ))}
+                    <button onClick={() => setActiveTab('overview')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'overview' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
+                      <i className="fas fa-chart-bar mr-2 text-slate-400"></i>{t("Market Data", "ข้อมูลการตลาด")}
+                    </button>
+                    <button onClick={() => setActiveTab('cstore-history')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'cstore-history' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
+                      <i className="fas fa-history mr-2 text-slate-400"></i>{t("C-Store History", "ประวัติร้านสะดวกซื้อ")}
+                    </button>
+                    <button onClick={() => setActiveTab('partners')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'partners' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
+                      <i className="fas fa-building mr-2 text-slate-400"></i>{t("The Partners", "ข้อมูลพันธมิตร")}
+                    </button>
+                    <button onClick={() => setActiveTab('strategy')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'strategy' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
+                      <i className="fas fa-chess-knight mr-2 text-slate-400"></i>{t("Strategy Dispute", "ข้อพิพาทเชิงกลยุทธ์")}
+                    </button>
+                    <button onClick={() => setActiveTab('dispute')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'dispute' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
+                      <i className="fas fa-balance-scale mr-2 text-slate-400"></i>{t("Timeline", "ลำดับเหตุการณ์")}
+                    </button>
+                    <button onClick={() => setActiveTab('resolution')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'resolution' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
+                      <i className="fas fa-handshake mr-2 text-slate-400"></i>{t("2024 Resolution", "บทสรุปปี 2024")}
+                    </button>
+                    
+                    <div className="flex-grow"></div> {/* Spacer */}
+                    
+                    <button onClick={() => setActiveTab('presentation')} className={`px-5 py-2.5 text-sm font-bold rounded-lg transition-all flex items-center border ${activeTab === 'presentation' ? 'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm' : 'bg-white border-slate-200 text-indigo-600 hover:bg-indigo-50 shadow-sm'}`}>
+                      <i className="fas fa-users mr-2"></i>{t("Presentation Guide", "แนวทางการนำเสนอ")}
+                    </button>
                   </div>
 
+                  {/* --- TAB CONTENT: MARKET DATA --- */}
                   {activeTab === 'overview' && (
                     <div className="space-y-6 animate-in fade-in duration-300">
+                      
+                      {/* Row 1: Line Charts */}
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                          <h3 className="text-lg font-bold mb-4">{t("Foreign Brand Sales (¥ Millions)", "ยอดขายแบรนด์ต่างชาติ (ล้านหยวน)")}</h3>
-                          <div className="h-72"><ResponsiveContainer><BarChart data={competitiveSalesData}><CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="year"/><YAxis/><Tooltip/><Legend/><Bar dataKey="FamilyMart" fill={BRAND_COLORS.FamilyMart}/><Bar dataKey="7-Eleven" fill={BRAND_COLORS['7-Eleven']}/><Bar dataKey="Lawson" fill={BRAND_COLORS.Lawson}/></BarChart></ResponsiveContainer></div>
+                          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center"><i className="fas fa-chart-line text-slate-400 mr-2"></i> {t("Foreign Brand Sales in China (¥ Millions)", "ยอดขายของแบรนด์ต่างชาติในจีน (ล้านหยวน)")}</h3>
+                          <div className="h-72">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <BarChart data={competitiveSalesData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="year" axisLine={false} tickLine={false} />
+                                <YAxis axisLine={false} tickLine={false} />
+                                <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                                <Legend iconType="circle" />
+                                <Bar dataKey="FamilyMart" name={t("FamilyMart", "แฟมิลี่มาร์ท")} fill={BRAND_COLORS.FamilyMart} radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="7-Eleven" fill={BRAND_COLORS['7-Eleven']} radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="Lawson" name={t("Lawson", "ลอว์สัน")} fill={BRAND_COLORS.Lawson} radius={[4, 4, 0, 0]} />
+                              </BarChart>
+                            </ResponsiveContainer>
+                          </div>
                         </div>
+
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                          <h3 className="text-lg font-bold mb-4">{t("JV Ownership (Exhibit 3)", "โครงสร้างผู้ถือหุ้น (เอกสาร 3)")}</h3>
-                          <div className="h-72"><ResponsiveContainer><PieChart><Pie data={exhibit3Ownership} innerRadius={60} outerRadius={90} dataKey="value" label>{exhibit3Ownership.map((e, i) => <Cell key={i} fill={e.color}/>)}</Pie><Tooltip/></PieChart></ResponsiveContainer></div>
+                          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center"><i className="fas fa-store text-slate-400 mr-2"></i> {t("Foreign Brand Store Count in China", "จำนวนสาขาของแบรนด์ต่างชาติในจีน")}</h3>
+                          <div className="h-72">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <LineChart data={competitiveStoresData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="year" axisLine={false} tickLine={false} />
+                                <YAxis axisLine={false} tickLine={false} domain={['dataMin - 200', 'dataMax + 200']} />
+                                <Tooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                                <Legend iconType="circle" />
+                                <Line type="monotone" dataKey="FamilyMart" name={t("FamilyMart", "แฟมิลี่มาร์ท")} stroke={BRAND_COLORS.FamilyMart} strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
+                                <Line type="monotone" dataKey="7-Eleven" stroke={BRAND_COLORS['7-Eleven']} strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
+                                <Line type="monotone" dataKey="Lawson" name={t("Lawson", "ลอว์สัน")} stroke={BRAND_COLORS.Lawson} strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
+                              </LineChart>
+                            </ResponsiveContainer>
+                          </div>
                         </div>
                       </div>
+
+                      {/* Row 2: China Total Market & JV Ownership */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        
+                        {/* China Total Market Growth */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center"><i className="fas fa-chart-area text-slate-400 mr-2"></i> {t("Total C-Stores in China", "ภาพรวมจำนวนร้านสะดวกซื้อในจีน")}</h3>
+                          <div className="h-72">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <ComposedChart data={marketGrowthData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="year" axisLine={false} tickLine={false} fontSize={12} />
+                                <YAxis yAxisId="left" axisLine={false} tickLine={false} fontSize={12} />
+                                <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} fontSize={12} domain={[0, 20]} />
+                                <Tooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                                <Legend />
+                                <Area yAxisId="left" type="monotone" dataKey="stores" name={t("Total Stores", "จำนวนสาขารวม")} stroke="#8b5cf6" fill="#c4b5fd" fillOpacity={0.4} strokeWidth={2} />
+                                <Line yAxisId="right" type="monotone" dataKey="growth" name={t("Growth Rate (%)", "อัตราการเติบโต (%)")} stroke="#f59e0b" strokeWidth={3} dot={{r: 4}} />
+                              </ComposedChart>
+                            </ResponsiveContainer>
+                          </div>
+                        </div>
+
+                        {/* Exhibit 3 JV Ownership */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <div className="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                                        <i className="fas fa-project-diagram text-indigo-500"></i>
+                                        {t("Exhibit 3: JV Ownership (China CVS Holding)", "เอกสารอ้างอิง 3: โครงสร้างผู้ถือหุ้นบริษัทร่วมทุน")}
+                                    </h3>
+                                    <p className="text-xs text-slate-500 mt-1">{t("Ting Hsin held the majority voting rights, giving them local operational control.", "Ting Hsin ถือหุ้นใหญ่ ซึ่งให้สิทธิ์ขาดในการควบคุมการดำเนินงานท้องถิ่น")}</p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row items-center justify-center h-64 gap-6">
+                                <div className="w-full md:w-1/2 h-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie data={exhibit3Ownership} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={2} dataKey="value">
+                                                {exhibit3Ownership.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip formatter={(value) => `${value}%`} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className="w-full md:w-1/2 space-y-3">
+                                    {exhibit3Ownership.map((item) => (
+                                        <div key={item.name} className="flex flex-col">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: item.color }}></div>
+                                                <span className="text-sm font-semibold text-slate-700">{item.value}%</span>
+                                            </div>
+                                            <span className="text-xs text-slate-500 pl-5">{item.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                      </div>
+                      
+                      {/* Row 3: Market Share Pies */}
                       <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                          <h3 className="text-lg font-bold mb-6 text-center">{t("2019 Market Share: China vs Japan", "ส่วนแบ่งการตลาด 2019")}</h3>
-                          <div className="flex flex-col md:flex-row h-64 items-center justify-around">
+                          <h3 className="text-lg font-bold text-slate-800 mb-6 text-center">{t("2019 Market Share: China vs Japan", "ส่วนแบ่งการตลาดปี 2019: ประเทศจีน เทียบกับ ประเทศญี่ปุ่น")}</h3>
+                          <div className="flex flex-col md:flex-row h-64 items-center justify-around mb-4">
                             <div className="w-full md:w-1/2 h-full flex flex-col items-center">
-                              <span className="text-sm font-semibold text-slate-500 mb-2">China</span>
-                              <ResponsiveContainer><PieChart><Pie data={chinaMarketShare} innerRadius={40} outerRadius={80} dataKey="value">{chinaMarketShare.map((e, i) => <Cell key={i} fill={BRAND_COLORS[e.name] || '#9ca3af'}/>)}</Pie><Tooltip/></PieChart></ResponsiveContainer>
+                              <span className="text-sm font-semibold text-slate-500 mb-2">{t("China Market (Fragmented)", "ตลาดจีน (ผู้เล่นกระจายตัว)")}</span>
+                              <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                  <Pie data={chinaMarketShare} cx="50%" cy="50%" innerRadius={40} outerRadius={80} paddingAngle={2} dataKey="value">
+                                    {chinaMarketShare.map((entry, index) => (
+                                      <Cell key={`cell-${index}`} fill={BRAND_COLORS[entry.name] || '#9ca3af'} />
+                                    ))}
+                                  </Pie>
+                                  <Tooltip formatter={(value) => `${value}%`} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                                </PieChart>
+                              </ResponsiveContainer>
                             </div>
                             <div className="w-full md:w-1/2 h-full flex flex-col items-center">
-                              <span className="text-sm font-semibold text-slate-500 mb-2">Japan</span>
-                              <ResponsiveContainer><PieChart><Pie data={japanMarketShare} innerRadius={40} outerRadius={80} dataKey="value">{japanMarketShare.map((e, i) => <Cell key={i} fill={BRAND_COLORS[e.name] || '#9ca3af'}/>)}</Pie><Tooltip/></PieChart></ResponsiveContainer>
+                              <span className="text-sm font-semibold text-slate-500 mb-2">{t("Japan Market (Oligopoly)", "ตลาดญี่ปุ่น (ผู้ขายน้อยราย)")}</span>
+                              <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                  <Pie data={japanMarketShare} cx="50%" cy="50%" innerRadius={40} outerRadius={80} paddingAngle={2} dataKey="value">
+                                    {japanMarketShare.map((entry, index) => (
+                                      <Cell key={`cell-${index}`} fill={BRAND_COLORS[entry.name] || '#9ca3af'} />
+                                    ))}
+                                  </Pie>
+                                  <Tooltip formatter={(value) => `${value}%`} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}/>
+                                </PieChart>
+                              </ResponsiveContainer>
                             </div>
+                          </div>
+                          <div className="flex flex-wrap justify-center gap-4 mt-2">
+                            {allBrands.map(brand => (
+                               <div key={brand} className="flex items-center text-xs font-medium text-slate-600 bg-slate-50 px-2 py-1 rounded border border-slate-100">
+                                 <span className="w-2.5 h-2.5 rounded-full mr-2" style={{backgroundColor: BRAND_COLORS[brand]}}></span>
+                                 {brand}
+                               </div>
+                            ))}
                           </div>
                       </div>
                     </div>
                   )}
 
+                  {/* --- TAB CONTENT: C-STORE HISTORY --- */}
+                  {activeTab === 'cstore-history' && (
+                    <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
+                        <h3 className="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-3">
+                          <i className="fas fa-history text-indigo-500"></i>
+                          {t("The Evolution of Convenience Stores", "วิวัฒนาการของร้านสะดวกซื้อ")}
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                          <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                            <h4 className="font-bold text-slate-800 flex items-center gap-2 mb-3 text-lg"><i className="fas fa-globe text-blue-500"></i> {t("Origins", "จุดกำเนิด")}</h4>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                              {t("Started in 1927 by John Green at the Southland Ice Company in Texas, selling bread, milk, and eggs from an ice dock. It was rebranded as 7-Eleven in 1946.",
+                                 "เริ่มต้นในปี 1927 โดย John Green ณ บริษัท Southland Ice Company ในรัฐเท็กซัส จำหน่ายขนมปัง นม และไข่ ก่อนจะรีแบรนด์เป็น 7-Eleven ในปี 1946")}
+                            </p>
+                          </div>
+                          <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                            <h4 className="font-bold text-slate-800 flex items-center gap-2 mb-3 text-lg"><i className="fas fa-chart-line text-green-500"></i> {t("Expansion", "การขยายตัว")}</h4>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                              {t("Expanded rapidly after 7-Eleven began franchising in 1964. Entered Japan in 1973 (Toyosu, Tokyo), Taiwan in 1979, and mainland China (Shenzhen) in 1992.",
+                                 "ขยายตัวอย่างรวดเร็วหลัง 7-Eleven เริ่มระบบแฟรนไชส์ในปี 1964 เข้าสู่ญี่ปุ่นในปี 1973 ไต้หวันปี 1979 และจีนแผ่นดินใหญ่ (เซินเจิ้น) ปี 1992")}
+                            </p>
+                          </div>
+                          <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                            <h4 className="font-bold text-slate-800 flex items-center gap-2 mb-3 text-lg"><i className="fas fa-clock text-orange-500"></i> {t("The Model", "โมเดลธุรกิจ")}</h4>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                              {t("Characterized by small size (50-200 sqm), 16-24 hour operations, fast checkout, and instant consumption items. Evolved to include fresh food and daily services.",
+                                 "โดดเด่นด้วยขนาดเล็ก (50-200 ตร.ม.) เปิด 16-24 ชม. ชำระเงินรวดเร็ว และเน้นสินค้าพร้อมทาน ปัจจุบันรวมถึงอาหารสดและบริการต่างๆ")}
+                            </p>
+                          </div>
+                        </div>
+                    </div>
+                  )}
+
+                  {/* --- TAB CONTENT: THE PARTNERS --- */}
+                  {activeTab === 'partners' && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in duration-300">
+                        {/* FamilyMart */}
+                        <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-[#00A54F]">
+                          <h3 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
+                            <i className="fas fa-store text-[#00A54F]"></i> FAMILYMART JAPAN
+                          </h3>
+                          <p className="text-sm text-slate-600 leading-relaxed mb-8">
+                            {t("FamilyMart (est. 1981) grew to become the world's second-largest C-store chain by 2019. Known for its 'neighborhood family' philosophy, high-quality fresh foods like 'Famichiki', and precise franchise standardization, FamilyMart represents the pinnacle of Japanese retail efficiency.",
+                               "FamilyMart (ก่อตั้งปี 1981) เติบโตจนเป็นเครือข่ายร้านสะดวกซื้ออันดับสองของโลกในปี 2019 ขึ้นชื่อเรื่องปรัชญา 'ครอบครัวในชุมชน' อาหารสดคุณภาพสูง และมาตรฐานแฟรนไชส์ที่รัดกุม")}
+                          </p>
+                          <h4 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100"><i className="fas fa-clock text-slate-400 mr-2"></i>{t("Timeline", "ลำดับเหตุการณ์")}</h4>
+                          <div className="relative border-l-2 border-green-200 ml-3 space-y-6">
+                            <div className="relative pl-6">
+                              <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                              <p className="text-xs text-green-600 font-bold">1973</p>
+                              <h4 className="text-sm font-bold text-slate-800">{t("The Experiment", "การทดลองตลาด")}</h4>
+                              <p className="text-xs text-slate-500 mt-1">{t("Started as an experimental store in Saitama Prefecture by Seiyu Stores Ltd.", "เริ่มเป็นร้านทดลองในไซตามะโดยบริษัท Seiyu Stores")}</p>
+                            </div>
+                            <div className="relative pl-6">
+                              <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                              <p className="text-xs text-green-600 font-bold">1981</p>
+                              <h4 className="text-sm font-bold text-slate-800">{t("Establishment", "การก่อตั้งบริษัท")}</h4>
+                              <p className="text-xs text-slate-500 mt-1">{t("Officially established. Adopted franchising, opening 1,000 stores in 5 years.", "ก่อตั้งเป็นทางการ นำระบบแฟรนไชส์มาใช้ เปิด 1,000 สาขาใน 5 ปี")}</p>
+                            </div>
+                            <div className="relative pl-6">
+                              <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                              <p className="text-xs text-green-600 font-bold">1988-1992</p>
+                              <h4 className="text-sm font-bold text-slate-800">{t("Going International", "ขยายสู่สากล")}</h4>
+                              <p className="text-xs text-slate-500 mt-1">{t("Entered Taiwan (1988), South Korea (1990), and Thailand (1992).", "เข้าสู่ไต้หวัน (1988) เกาหลีใต้ (1990) และไทย (1992)")}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Ting Hsin */}
+                        <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-[#003882]">
+                          <h3 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
+                            <i className="fas fa-industry text-[#003882]"></i> TING HSIN GROUP
+                          </h3>
+                          <p className="text-sm text-slate-600 leading-relaxed mb-8">
+                            {t("A Taiwan-based conglomerate that controls massive local supply chains in China. Known for creating the dominant 'Master Kong' instant noodle brand in 1992, Ting Hsin possessed the local know-how, real estate connections, and factories required to scale rapidly.",
+                               "กลุ่มทุนจากไต้หวันที่ควบคุมห่วงโซ่อุปทานขนาดใหญ่ในจีน มีชื่อเสียงจากการสร้างแบรนด์บะหมี่ 'Master Kong' ในปี 1992 Ting Hsin มีความรู้ท้องถิ่น เครือข่ายอสังหาฯ และโรงงานที่จำเป็นต่อการขยายตัว")}</p>
+                          <h4 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100"><i className="fas fa-clock text-slate-400 mr-2"></i>{t("Timeline", "ลำดับเหตุการณ์")}</h4>
+                          <div className="relative border-l-2 border-blue-200 ml-3 space-y-6">
+                            <div className="relative pl-6">
+                              <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                              <p className="text-xs text-blue-600 font-bold">1958</p>
+                              <h4 className="text-sm font-bold text-slate-800">{t("Founding", "ก่อตั้ง")}</h4>
+                              <p className="text-xs text-slate-500 mt-1">{t("Founded by Dehe Wei as a small castor oil business in Taiwan.", "ก่อตั้งเป็นธุรกิจน้ำมันละหุ่งขนาดเล็กในไต้หวัน")}</p>
+                            </div>
+                            <div className="relative pl-6">
+                              <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                              <p className="text-xs text-blue-600 font-bold">1992</p>
+                              <h4 className="text-sm font-bold text-slate-800">{t("Master Kong", "ความสำเร็จของ Master Kong")}</h4>
+                              <p className="text-xs text-slate-500 mt-1">{t("Launched cheap, tasty instant noodles, dominating the Chinese market.", "เปิดตัวบะหมี่กึ่งสำเร็จรูปราคาถูกและอร่อย ครองตลาดจีน")}</p>
+                            </div>
+                            <div className="relative pl-6">
+                              <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                              <p className="text-xs text-blue-600 font-bold">1996+</p>
+                              <h4 className="text-sm font-bold text-slate-800">{t("Expansion", "การขยายตัว")}</h4>
+                              <p className="text-xs text-slate-500 mt-1">{t("Acquired Dicos, partnered with Tesco, and formed a bottling alliance with PepsiCo.", "ซื้อกิจการ Dicos จับมือกับ Tesco และเป็นพันธมิตรกับ PepsiCo")}</p>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                  )}
+
+                  {/* --- TAB CONTENT: STRATEGY DISPUTE & MAP --- */}
                   {activeTab === 'strategy' && (
                     <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
+                        
                         <div className="mb-8">
-                            <h3 className="text-2xl font-black text-slate-800 mb-2 flex items-center gap-3"><i className="fas fa-map-marked-alt text-indigo-500"></i> {t("Geographic Expansion Dispute", "ข้อพิพาทการขยายพื้นที่")}</h3>
-                            <p className="text-slate-500 text-sm">{t("Strategy map based on provided regional data.", "แผนที่กลยุทธ์ตามข้อมูลภูมิภาค")}</p>
+                            <h3 className="text-2xl font-black text-slate-800 mb-2 flex items-center gap-3">
+                                <i className="fas fa-map-marked-alt text-indigo-500"></i> {t("The Geographic Expansion Dispute", "ข้อพิพาทด้านการขยายภูมิภาค")}
+                            </h3>
+                            <p className="text-slate-500 text-sm">{t("A visual representation of the core strategic conflict between the two partners.", "ภาพแสดงความขัดแย้งเชิงกลยุทธ์หลักระหว่างพันธมิตรทั้งสอง")}</p>
                         </div>
+
+                        {/* MAP CONTAINER (Height increased for better visibility, pins removed) */}
                         <div className="relative w-full max-w-4xl mx-auto h-[700px] bg-slate-50 rounded-xl overflow-hidden shadow-inner border border-slate-200 mb-10">
-                            <div className="absolute inset-0 w-full h-full china-map-bg"></div>
                             
+                            {/* Background map from local file */}
+                            <div className="absolute inset-0 w-full h-full china-map-bg"></div>
+
+                            {/* Legends overlay - Left floating on top of the image so they are still useful */}
                             <div className="absolute top-4 left-4 bg-white/95 p-4 rounded-xl border-l-4 border-orange-500 shadow-md max-w-[260px] z-10">
-                                <div className="text-orange-600 font-bold text-sm mb-1 flex items-center"><i className="fas fa-arrow-right mr-2"></i> {t("Ting Hsin Expansion", "การรุกตลาดของ Ting Hsin")}</div>
-                                <p className="text-xs text-slate-600 leading-relaxed">{t("Aggressive push into Tier 2/3 inland cities for national scale.", "รุกเข้าสู่เมืองรองระดับ 2/3 เพื่อขยายสเกลระดับประเทศ")}</p>
+                                <div className="text-orange-600 font-bold text-sm mb-1 flex items-center"><i className="fas fa-arrow-right mr-2"></i> {t("Ting Hsin Expansion", "การขยายตัวของ Ting Hsin")}</div>
+                                <p className="text-xs text-slate-600 leading-relaxed">{t("Pushing inland into Tier 2/3 cities to capture market share before local rivals.", "รุกเข้าสู่เมืองรองระดับ 2/3 เพื่อชิงส่วนแบ่งการตลาดก่อนคู่แข่งในพื้นที่")}</p>
                             </div>
 
                             <div className="absolute bottom-4 left-4 bg-white/95 p-4 rounded-xl border-l-4 border-red-600 shadow-md max-w-[260px] z-10">
                                 <div className="text-red-600 font-bold text-sm mb-1 flex items-center"><i className="fas fa-shield-alt mr-2"></i> {t("FM Japan Focus", "จุดเน้นของ FM Japan")}</div>
-                                <p className="text-xs text-slate-600 leading-relaxed">{t("Protect Tier 1 premium margins and logistical density.", "รักษาอัตรากำไรพรีเมียมในเมืองหลักระดับ 1")}</p>
+                                <p className="text-xs text-slate-600 leading-relaxed">{t("Defend and saturate coastal Tier 1 mega-cities where premium products sell best.", "ปกป้องและเจาะลึกในมหานครชายฝั่งระดับ 1 ซึ่งสินค้าพรีเมียมขายได้ดีที่สุด")}</p>
+                            </div>
+                        </div>
+
+                        {/* Analysis Text Below Map */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                                <h4 className="text-lg font-bold text-slate-800 mb-3"><i className="fas fa-city text-slate-400 mr-2"></i>{t("City Tiers Explained", "อธิบายระดับเมือง")}</h4>
+                                <p className="text-sm text-slate-600 leading-relaxed mb-3"><strong>{t("Tier 1:", "ระดับ 1:")}</strong> {t("Wealthy megacities (Shanghai, Beijing). Consumers pay premiums for quality fresh food. High density allows efficient cold-chain logistics.", "มหานครที่มั่งคั่ง ผู้บริโภคยอมจ่ายเพื่อคุณภาพ โลจิสติกส์ความเย็นมีประสิทธิภาพสูง")}</p>
+                                <p className="text-sm text-slate-600 leading-relaxed"><strong>{t("Tier 2/3:", "ระดับ 2/3:")}</strong> {t("Massive populations but more price-sensitive. Requires aggressive 'land-grab' strategies to beat local competitors.", "ประชากรมหาศาลแต่อ่อนไหวต่อราคา ต้องใช้กลยุทธ์ยึดพื้นที่เชิงรุกเพื่อชนะคู่แข่งท้องถิ่น")}</p>
+                            </div>
+                            <div className="bg-red-50 p-6 rounded-xl border border-red-100">
+                                <h4 className="text-lg font-bold text-red-900 mb-3"><i className="fas fa-file-invoice-dollar text-red-500 mr-2"></i>{t("The Financial Blackout", "การปกปิดข้อมูลทางการเงิน")}</h4>
+                                <p className="text-sm text-red-800 leading-relaxed">
+                                    {t("The ultimate trust-breaker. Ting Hsin sourced 40% of products from its own factories. When FM Japan requested financial data to check for hidden profit shifting (artificially inflated costs), Ting Hsin completely stopped sharing data in 2012.", 
+                                       "จุดแตกหักสำคัญ Ting Hsin จัดหาสินค้า 40% จากโรงงานตัวเอง เมื่อ FM Japan ขอข้อมูลการเงินเพื่อเช็คการซ่อนกำไร Ting Hsin ก็หยุดแชร์ข้อมูลโดยสิ้นเชิงในปี 2012")}
+                                </p>
                             </div>
                         </div>
                     </div>
                   )}
 
+                  {/* --- TAB CONTENT: TIMELINE --- */}
                   {activeTab === 'dispute' && (
-                    <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
-                        <h3 className="text-2xl font-bold mb-8">{t("The Legal Timeline", "ไทม์ไลน์คดีความ")}</h3>
+                    <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
+                        <h3 className="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-3">
+                          <i className="fas fa-balance-scale text-red-500"></i>
+                          {t("The Legal Timeline", "ลำดับเหตุการณ์คดีความ")}
+                        </h3>
                         <div className="relative border-l-2 border-slate-200 ml-4 space-y-8">
                             <div className="relative pl-6">
                               <div className="absolute w-4 h-4 bg-slate-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                              <p className="text-sm text-slate-500 font-bold">Oct 2018</p>
-                              <h4 className="text-lg font-bold">FamilyMart Files Lawsuit</h4>
-                              <p className="text-sm text-slate-600">Requesting JV dissolution in Cayman Islands.</p>
+                              <p className="text-sm text-slate-500 font-bold mb-1">{t("Oct 2018", "ตุลาคม 2018")}</p>
+                              <h4 className="text-lg font-bold text-slate-800">{t("FamilyMart Sues in Cayman Islands", "FamilyMart ฟ้องศาลหมู่เกาะเคย์แมน")}</h4>
+                              <p className="text-sm text-slate-600 mt-1">{t("Requests compulsory dissolution of the JV due to unpaid royalties and hidden financial data.", "ขอบังคับยุติการร่วมทุนเนื่องจากไม่จ่ายค่าลิขสิทธิ์และปกปิดข้อมูลการเงิน")}</p>
                             </div>
                             <div className="relative pl-6">
-                              <div className="absolute w-4 h-4 bg-red-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                              <p className="text-sm text-red-500 font-bold">Sep 2023</p>
-                              <h4 className="text-lg font-bold">Privy Council Ruling</h4>
-                              <p className="text-sm text-slate-600">Dispute mandated to arbitration before court action.</p>
+                              <div className="absolute w-4 h-4 bg-slate-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                              <p className="text-sm text-slate-500 font-bold mb-1">{t("Feb 2019", "กุมภาพันธ์ 2019")}</p>
+                              <h4 className="text-lg font-bold text-slate-800">{t("Arbitration Ordered", "ศาลสั่งให้อนุญาโตตุลาการชี้ขาด")}</h4>
+                              <p className="text-sm text-slate-600 mt-1">{t("Court suspends hearing, ordering dispute to go through arbitration per JV agreement.", "ศาลระงับการพิจารณาคดี สั่งให้ข้อพิพาทผ่านอนุญาโตตุลาการตามข้อตกลง")}</p>
                             </div>
                             <div className="relative pl-6">
-                              <div className="absolute w-4 h-4 bg-green-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                              <p className="text-sm text-green-600 font-bold">Mar 2024</p>
-                              <h4 className="text-lg font-bold">Restructuring Deal</h4>
-                              <p className="text-sm text-slate-600">Agreement reached to split operations.</p>
+                              <div className="absolute w-4 h-4 bg-slate-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                              <p className="text-sm text-slate-500 font-bold mb-1">{t("Mar 2019", "มีนาคม 2019")}</p>
+                              <h4 className="text-lg font-bold text-slate-800">{t("FamilyMart Appeals", "FamilyMart ยื่นอุทธรณ์คัดค้าน")}</h4>
+                              <p className="text-sm text-slate-600 mt-1">{t("Refusing to accept the arbitration mandate, FamilyMart Japan appeals the court's decision, insisting on direct legal dissolution.", "ด้วยความปฏิเสธที่จะยอมรับคำสั่งของอนุญาโตตุลาการ FamilyMart Japan จึงได้ดำเนินการอุทธรณ์คำตัดสินของศาล โดยยืนกรานที่จะขอให้ศาลมีคำสั่งยุติการร่วมทุนทางกฎหมายโดยตรง")}</p>
+                            </div>
+                            <div className="relative pl-6">
+                              <div className="absolute w-4 h-4 bg-red-500 rounded-full -left-[9px] top-1 border-2 border-white shadow-[0_0_0_2px_rgba(239,68,68,0.2)]"></div>
+                              <p className="text-sm text-red-500 font-bold mb-1">{t("May 2019", "พฤษภาคม 2019")}</p>
+                              <h4 className="text-lg font-bold text-slate-800">{t("The Public Feud", "ความขัดแย้งลุกลามสู่สาธารณะ")}</h4>
+                              <p className="text-sm text-slate-600 mt-1">{t("Lawsuit leaks to press. Bitter public war of words via formal statements begins.", "คดีรั่วไหลสู่สื่อ เกิดสงครามน้ำลายผ่านแถลงการณ์สาธารณะอย่างดุเดือด")}</p>
+                            </div>
+                            <div className="relative pl-6">
+                              <div className="absolute w-4 h-4 bg-slate-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                              <p className="text-sm text-slate-500 font-bold mb-1">{t("Sep 2023", "กันยายน 2023")}</p>
+                              <h4 className="text-lg font-bold text-slate-800">{t("UK Privy Council Ruling", "คำตัดสินของคณะองคมนตรีสหราชอาณาจักร")}</h4>
+                              <p className="text-sm text-slate-600 mt-1">{t("Landmark ruling affirms factual disputes (loss of trust) must be arbitrated first.", "คำตัดสินครั้งประวัติศาสตร์ยืนยันว่าข้อพิพาท (การสูญเสียความไว้ใจ) ต้องผ่านอนุญาโตตุลาการก่อน")}</p>
+                            </div>
+                            <div className="relative pl-6">
+                              <div className="absolute w-4 h-4 bg-[#00A54F] rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                              <p className="text-sm text-green-600 font-bold mb-1">{t("Mar 2024", "มีนาคม 2024")}</p>
+                              <h4 className="text-lg font-bold text-slate-800">{t("Restructuring Agreement", "บรรลุข้อตกลงปรับโครงสร้าง")}</h4>
+                              <p className="text-sm text-slate-600 mt-1">{t("Out-of-court settlement divides regional operations, ending the deadlock.", "ข้อตกลงยอมความนอกศาลเพื่อแบ่งพื้นที่บริหาร ยุติทางตันของธุรกิจ")}</p>
                             </div>
                         </div>
                     </div>
                   )}
 
+                  {/* --- TAB CONTENT: RESOLUTION --- */}
+                  {activeTab === 'resolution' && (
+                    <div className="bg-white p-8 md:p-12 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
+                        <div className="max-w-3xl mx-auto text-center mb-10">
+                            <div className="inline-block bg-blue-50 p-4 rounded-full mb-4 text-blue-500 text-4xl"><i className="fas fa-handshake"></i></div>
+                            <h3 className="text-3xl font-black text-slate-800 mb-4">{t("The 2024 Resolution", "บทสรุปข้อตกลงปี 2024")}</h3>
+                            <p className="text-slate-600 text-lg">{t("After years of costly legal battles, the partners reached a pragmatic out-of-court settlement, successfully restructuring the alliance to save the brand.", "หลังจากสู้คดีด้วยค่าใช้จ่ายมหาศาล พันธมิตรยอมความนอกศาล ปรับโครงสร้างเพื่อรักษาแบรนด์ไว้")}</p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            <div className="bg-slate-50 border border-slate-200 p-8 rounded-xl border-t-4 border-t-[#003882]">
+                                <h4 className="text-xl font-bold text-[#003882] mb-4 flex items-center gap-2"><i className="fas fa-map-marker-alt"></i> {t("Ting Hsin's Territory", "เขตอำนาจของ Ting Hsin")}</h4>
+                                <ul className="space-y-3 text-sm text-slate-700">
+                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> {t("Retains an 80% stake in the lucrative East China operations.", "ถือหุ้น 80% ในกิจการภาคตะวันออกที่ทำกำไรสูง")}</li>
+                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> {t("Continues to manage 2,100+ stores in Shanghai, Suzhou, and Hangzhou.", "บริหารร้านค้ากว่า 2,100 แห่งในเซี่ยงไฮ้ ซูโจว และหางโจวต่อไป")}</li>
+                                </ul>
+                            </div>
+                            <div className="bg-slate-50 border border-slate-200 p-8 rounded-xl border-t-4 border-t-[#00A54F]">
+                                <h4 className="text-xl font-bold text-[#00A54F] mb-4 flex items-center gap-2"><i className="fas fa-store"></i> {t("FamilyMart Japan's Territory", "เขตอำนาจของ FM Japan")}</h4>
+                                <ul className="space-y-3 text-sm text-slate-700">
+                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> {t("Takes over direct management of South, North, and Southwest China.", "รับช่วงบริหารงานโดยตรงในจีนตอนใต้ ตอนเหนือ และตะวันตกเฉียงใต้")}</li>
+                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> {t("Gains autonomy to implement new digital value chain strategies without friction.", "ได้อิสระในการใช้กลยุทธ์ค้าปลีกดิจิทัลใหม่ๆ โดยไม่มีข้อขัดแย้ง")}</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-xl text-center">
+                            <h4 className="font-bold text-indigo-900 mb-2">{t("The Strategic Win-Win", "ผลลัพธ์แบบวิน-วิน")}</h4>
+                            <p className="text-sm text-indigo-800">
+                                {t("Ting Hsin kept its highly profitable Shanghai network. FM Japan avoided the catastrophic loss of its brand, ended the deadlock, and recorded a 31.6 billion yen gain from the restructuring.", 
+                                   "Ting Hsin รักษาเครือข่ายเซี่ยงไฮ้ที่ทำกำไรมหาศาลไว้ได้ FM Japan หลีกเลี่ยงการสูญเสียแบรนด์ ยุติทางตัน และบันทึกกำไร 3.16 หมื่นล้านเยนจากการปรับโครงสร้าง")}
+                            </p>
+                        </div>
+                    </div>
+                  )}
+
+                  {/* --- TAB CONTENT: PRESENTATION GUIDE --- */}
                   {activeTab === 'presentation' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-300">
-                        <div className="bg-white p-6 rounded-xl shadow-sm border-t-4 border-t-[#00A54F]">
-                            <h3 className="text-xl font-bold mb-4">Speaker 1: Setup</h3>
-                            <ul className="text-sm space-y-2 list-disc pl-4">
-                                <li><strong>Context:</strong> Explain Build-Borrow-Buy framework.</li>
-                                <li><strong>JV Logic:</strong> Local assets (Ting Hsin) + Brand (Japan).</li>
-                                <li><strong>KPIs:</strong> Show success (2,800 stores).</li>
-                            </ul>
+                    <div className="space-y-6 animate-in fade-in duration-300">
+                        <div className="bg-slate-800 p-8 rounded-xl text-white text-center shadow-lg">
+                            <h2 className="text-3xl font-black mb-2">{t("Presentation Structure", "โครงสร้างการนำเสนอ")}</h2>
+                            <p className="text-slate-300">{t("A 3-speaker narrative framework covering the setup, the conflict, and the academic analysis.", "โครงสร้าง 3 ผู้พูดครอบคลุมตั้งแต่ภูมิหลัง ความขัดแย้ง และบทวิเคราะห์เชิงวิชาการ")}</p>
                         </div>
-                        <div className="bg-white p-6 rounded-xl shadow-sm border-t-4 border-t-red-500">
-                            <h3 className="text-xl font-bold mb-4">Speaker 2: Conflict</h3>
-                            <ul className="text-sm space-y-2 list-disc pl-4">
-                                <li><strong>Strategic Rift:</strong> Inland vs Coastal expansion.</li>
-                                <li><strong>Trust:</strong> Royalty fee refusal & data blackout.</li>
-                                <li><strong>Litigation:</strong> The Cayman lawsuit escalation.</li>
-                            </ul>
-                        </div>
-                        <div className="bg-white p-6 rounded-xl shadow-sm border-t-4 border-t-blue-500">
-                            <h3 className="text-xl font-bold mb-4">Speaker 3: Resolution</h3>
-                            <ul className="text-sm space-y-2 list-disc pl-4">
-                                <li><strong>Alliance Evolution:</strong> Asymmetric learning over 20 years.</li>
-                                <li><strong>BATNA:</strong> Why settlement was better than dissolution.</li>
-                                <li><strong>The Deal:</strong> Ting Hsin keeps Shanghai hub; FM keeps the rest.</li>
-                            </ul>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Speaker 1 */}
+                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-[#00A54F]">
+                                <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{t("Speaker 1", "ผู้พูดที่ 1")}</div>
+                                <h3 className="text-xl font-bold text-slate-800 mb-4">{t("The Foundation", "ภูมิหลังและการก่อตั้ง")}</h3>
+                                <div className="space-y-4">
+                                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                        <h4 className="text-xs font-bold text-slate-700 mb-1">{t("Objective:", "เป้าหมาย:")}</h4>
+                                        <p className="text-xs text-slate-600">{t("Introduce the two giants and explain WHY they partnered using the Build-Borrow-Buy framework.", "แนะนำสองบริษัทยักษ์ใหญ่และอธิบายเหตุผลการร่วมมือโดยใช้เฟรมเวิร์ก Build-Borrow-Buy")}</p>
+                                    </div>
+                                    <ul className="text-sm text-slate-700 space-y-2 list-disc pl-4">
+                                        <li><strong>FM Japan:</strong> Premium quality, exact operations, but lacked local China network.</li>
+                                        <li><strong>Ting Hsin:</strong> 'Master Kong' creators. Deep local supply chains and Guanxi.</li>
+                                        <li><strong>Build-Borrow-Buy:</strong> Internal resources low. Tradability of complex know-how low. Need for closeness high. <em>Result: Equity Alliance (JV).</em></li>
+                                        <li><strong>Success:</strong> Reached 2,800+ stores. #1 foreign brand.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {/* Speaker 2 */}
+                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-red-500">
+                                <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{t("Speaker 2", "ผู้พูดที่ 2")}</div>
+                                <h3 className="text-xl font-bold text-slate-800 mb-4">{t("The Conflict", "ความขัดแย้ง & คดีความ")}</h3>
+                                <div className="space-y-4">
+                                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                        <h4 className="text-xs font-bold text-slate-700 mb-1">{t("Objective:", "เป้าหมาย:")}</h4>
+                                        <p className="text-xs text-slate-600">{t("Detail the strategic disputes, the financial data blackout, and the bitter lawsuit.", "ให้รายละเอียดข้อพิพาทกลยุทธ์ การปกปิดข้อมูลเงิน และคดีความ")}</p>
+                                    </div>
+                                    <ul className="text-sm text-slate-700 space-y-2 list-disc pl-4">
+                                        <li><strong>Geography:</strong> FM wanted coastal Tier 1. Ting Hsin aggressively pushed Tier 2/3.</li>
+                                        <li><strong>Royalties:</strong> Ting Hsin stopped paying the 1% fee, demanding 0.3% like rivals.</li>
+                                        <li><strong>Data Blackout:</strong> Ting Hsin sourced 40% from own factories. Stopped sharing financial data in 2012, breaking all trust.</li>
+                                        <li><strong>Lawsuit:</strong> FM sues in Cayman Islands (2018) for dissolution. Leads to 5-year deadlock.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {/* Speaker 3 */}
+                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-blue-500">
+                                <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{t("Speaker 3", "ผู้พูดที่ 3")}</div>
+                                <h3 className="text-xl font-bold text-slate-800 mb-4">{t("The Resolution", "บทสรุปและการวิเคราะห์")}</h3>
+                                <div className="space-y-4">
+                                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                        <h4 className="text-xs font-bold text-slate-700 mb-1">{t("Objective:", "เป้าหมาย:")}</h4>
+                                        <p className="text-xs text-slate-600">{t("Use frameworks to explain why it broke down and why they settled in 2024.", "ใช้เฟรมเวิร์กอธิบายว่าทำไมถึงพัง และทำไมถึงยอมความในปี 2024")}</p>
+                                    </div>
+                                    <ul className="text-sm text-slate-700 space-y-2 list-disc pl-4">
+                                        <li><strong>Alliance Evolution:</strong> Over 20 years, Ting Hsin "learned" the business (Asymmetric Learning). FM's know-how lost value. Power shifted.</li>
+                                        <li><strong>BATNA Analysis:</strong> A full divorce was catastrophic for both. FM loses supply chain; Ting Hsin loses the brand.</li>
+                                        <li><strong>2024 Deal:</strong> A logical restructuring. Ting Hsin gets East China cash-cow. FM gets the rest for digital strategies. A strategic Win-Win.</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                   )}
+
                 </div>
-            );
+              );
+            }
+
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
+
+        } catch (error) {
+            console.error("Dashboard failed to load:", error);
+            document.getElementById('root').innerHTML = `
+                <div style="padding: 40px; color: #ef4444; text-align: center;">
+                    <h2>Failed to load. Please check console.</h2>
+                </div>
+            `;
         }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-
     </script>
 </body>
 </html>
