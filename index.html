@@ -5,50 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FamilyMart in China: Partnership Dashboard</title>
     
-    <!-- Tailwind CSS for styling -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- FontAwesome for Icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- React & ReactDOM (Highly Stable CDNJS Versions) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-    
-    <!-- PropTypes (Required for Recharts) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js"></script>
-    
-    <!-- Recharts (Locked to stable 2.1.9 for guaranteed browser compatibility) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.1.9/Recharts.js"></script>
+    <!-- React & Dependencies (Stable Versions) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+    <script crossorigin src="https://unpkg.com/recharts@2.10.3/umd/Recharts.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Babel for in-browser JSX transpilation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
-
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .loading-screen { display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; color: #475569; }
         
-        /* Map specific styling */
-        .china-map-bg {
-            /* Points to your downloaded map image in the same folder */
-            background-image: url('./china-map.jpg');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        
-        /* Custom scrollbar for better look */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body>
-    
-    <!-- React App Root -->
     <div id="root">
         <div class="loading-screen">
             <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-[#00A54F]"></i>
@@ -56,17 +36,67 @@
         </div>
     </div>
 
-    <!-- React Application Code -->
     <script type="text/babel">
-        try {
-            // Use window explicitly to prevent ReferenceErrors
-            const { useState } = window.React;
+        const { useState, useEffect, useRef } = React;
+
+        // Interactive Cities Data (Initial Data moved outside component to prevent recreation and allow hook usage)
+        const initialInteractiveCities = [
+            { id: 'beijing', name: 'Beijing', tier: 'Tier 1', pop: '21.54 Million', gdp: '¥3.5 Trillion', top: '41%', left: '74%', theme: 'tier1' },
+            { id: 'shanghai', name: 'Shanghai', tier: 'Tier 1 Hub', pop: '24.28 Million', gdp: '¥3.8 Trillion', top: '65%', left: '84%', theme: 'tier1' },
+            { id: 'guangzhou', name: 'Guangzhou', tier: 'Tier 1', pop: '15.31 Million', gdp: '¥2.4 Trillion', top: '87%', left: '70%', theme: 'tier1' },
+            { id: 'shenzhen', name: 'Shenzhen', tier: 'Tier 1', pop: '13.44 Million', gdp: '¥2.7 Trillion', top: '89%', left: '72%', theme: 'tier1' },
+            { id: 'chengdu', name: 'Chengdu', tier: 'New Tier 1', pop: '16.58 Million', gdp: '¥1.7 Trillion', top: '67%', left: '52%', theme: 'newTier1' },
+            { id: 'wuhan', name: 'Wuhan', tier: 'New Tier 1', pop: '11.21 Million', gdp: '¥1.6 Trillion', top: '65%', left: '71%', theme: 'newTier1' },
+            { id: 'hangzhou', name: 'Hangzhou', tier: 'New Tier 1', pop: '10.36 Million', gdp: '¥1.5 Trillion', top: '66%', left: '81%', theme: 'newTier1' },
+            { id: 'zhengzhou', name: 'Zhengzhou', tier: 'New Tier 1', pop: '10.35 Million', gdp: '¥1.1 Trillion', top: '51%', left: '71%', theme: 'newTier1' },
+            { id: 'nanjing', name: 'Nanjing', tier: 'New Tier 1', pop: '8.50 Million', gdp: '¥1.4 Trillion', top: '60%', left: '76%', theme: 'newTier1' },
+            { id: 'chongqing', name: 'Chongqing', tier: 'New Tier 1', pop: '31.24 Million', gdp: '¥2.3 Trillion', top: '70%', left: '57%', theme: 'newTier1' },
+            { id: 'wuxi', name: 'Wuxi', tier: 'Tier 2', pop: '6.59 Million', gdp: '¥1.2 Trillion', top: '65%', left: '78%', theme: 'tier2' },
+            { id: 'foshan', name: 'Foshan', tier: 'Tier 2', pop: '8.16 Million', gdp: '¥1.1 Trillion', top: '87%', left: '67%', theme: 'tier2' },
+            { id: 'fuzhou', name: 'Fuzhou', tier: 'Tier 2', pop: '8.29 Million', gdp: '¥0.9 Trillion', top: '80%', left: '80%', theme: 'tier2' },
+            { id: 'harbin', name: 'Harbin', tier: 'Tier 2', pop: '10.76 Million', gdp: '¥0.52 Trillion', top: '29%', left: '89%', theme: 'tier2' },
+            { id: 'hohhot', name: 'Hohhot', tier: 'Tier 3', pop: '3.12 Million', gdp: '¥0.28 Trillion', top: '40%', left: '66%', theme: 'tier3' },
+            { id: 'lanzhou', name: 'Lanzhou', tier: 'Tier 2', pop: '3.79 Million', gdp: '¥0.28 Trillion', top: '51%', left: '53%', theme: 'tier2' },
+            { id: 'yantai', name: 'Yantai', tier: 'Tier 2', pop: '7.13 Million', gdp: '¥0.76 Trillion', top: '48%', left: '81%', theme: 'tier2' },
+            { id: 'changsha', name: 'Changsha', tier: 'New Tier 1', pop: '8.39 Million', gdp: '¥1.15 Trillion', top: '73%', left: '69%', theme: 'newTier1' },
+            { id: 'nanning', name: 'Nanning', tier: 'Tier 2', pop: '7.25 Million', gdp: '¥0.45 Trillion', top: '87%', left: '60%', theme: 'tier2' },
+            { id: 'quanzhou', name: 'Quanzhou', tier: 'Tier 2', pop: '8.74 Million', gdp: '¥0.99 Trillion', top: '84%', left: '77%', theme: 'tier2' }
+        ];
+
+        function App() {
+            // ALL Hooks must be called before any early returns
+            const [activeTab, setActiveTab] = useState('overview');
+            const [lang, setLang] = useState('EN');
+            const [ready, setReady] = useState(false);
+            const [hoveredCity, setHoveredCity] = useState(null);
+            
+            // Drag state
+            const [draggingCityId, setDraggingCityId] = useState(null);
+            const [interactiveCities, setInteractiveCities] = useState(initialInteractiveCities);
+            const mapRef = useRef(null);
+
+            // Safety check for Recharts initialization
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    if (window.Recharts) {
+                        setReady(true);
+                        clearInterval(interval);
+                    }
+                }, 100);
+                return () => clearInterval(interval);
+            }, []);
+
+            // Early return AFTER all hooks
+            if (!ready) return null;
+
             const { 
               BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
               PieChart, Pie, Cell, AreaChart, Area, ComposedChart
             } = window.Recharts;
 
-            // --- Data Extracts from the Case Study ---
+            const t = (en, th) => lang === 'EN' ? en : th;
+
+            // --- Data ---
             const marketGrowthData = [
               { year: '2016', stores: 94000, growth: 3 },
               { year: '2017', stores: 106000, growth: 13 },
@@ -102,7 +132,6 @@
               { name: 'Others', value: 10 },
             ];
 
-            // Exhibit 3: Joint Venture Ownership Structure
             const exhibit3Ownership = [
               { name: 'Ting Hsin Int. Group', value: 59.65, color: '#003882' },
               { name: 'FM China Holding (Japan/Itochu)', value: 22.05, color: '#00A54F' },
@@ -117,28 +146,60 @@
                 'Hongqi': '#8b5cf6',
                 'Others': '#9ca3af'
             };
+
             const allBrands = ['FamilyMart', '7-Eleven', 'Lawson', 'Meiyijia', 'Hongqi', 'Others'];
 
-            // --- Main Application Component ---
-            function App() {
-              const [activeTab, setActiveTab] = useState('overview');
-              const [lang, setLang] = useState('EN');
+            const handleDragStart = (e, id) => {
+                e.preventDefault();
+                setDraggingCityId(id);
+                setHoveredCity(null); // Hide tooltip while dragging
+            };
 
-              const t = (en, th) => lang === 'EN' ? en : th;
+            const handleDragMove = (e) => {
+                if (!draggingCityId || !mapRef.current) return;
+                const rect = mapRef.current.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-              return (
+                let x = clientX - rect.left;
+                let y = clientY - rect.top;
+
+                // Clamp values to keep pins inside the map bounds
+                x = Math.max(0, Math.min(x, rect.width));
+                y = Math.max(0, Math.min(y, rect.height));
+
+                const left = (x / rect.width * 100).toFixed(0) + '%';
+                const top = (y / rect.height * 100).toFixed(0) + '%';
+
+                setInteractiveCities(prev => prev.map(city => 
+                    city.id === draggingCityId ? { ...city, left, top } : city
+                ));
+            };
+
+            const handleDragEnd = () => {
+                setDraggingCityId(null);
+            };
+
+            const themeClasses = {
+                tier1: { bg: 'bg-[#1ba13b]', text: 'text-[#1ba13b]', badgeText: 'text-white' },
+                newTier1: { bg: 'bg-[#b9e623]', text: 'text-[#96be11]', badgeText: 'text-slate-800' }, 
+                tier2: { bg: 'bg-[#ffde00]', text: 'text-[#ffde00]', badgeText: 'text-slate-800' }, 
+                tier3: { bg: 'bg-[#ffb400]', text: 'text-[#ffb400]', badgeText: 'text-white' }
+            };
+
+            return (
                 <div className="min-h-screen p-4 md:p-8 max-w-[1400px] mx-auto text-slate-800">
                   
-                  {/* Header Section */}
+                  {/* Header */}
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <header>
                       <h1 className="text-3xl md:text-4xl font-black text-slate-900 flex items-center gap-3 mb-2 tracking-tight">
-                        <i className="fas fa-store text-4xl text-[#00A54F]"></i>
+                        <i className="fas fa-store text-[#00A54F]"></i>
                         {t("FamilyMart in China: Partnership Dashboard", "แดชบอร์ดวิเคราะห์ความร่วมมือ: แฟมิลี่มาร์ทในประเทศจีน")}
                       </h1>
                       <p className="text-slate-500 text-lg max-w-3xl">
                         {t("An interactive analysis of the 20-year international partnership divorce between FamilyMart Japan and Ting Hsin.", 
-                           "บทวิเคราะห์เชิงโต้ตอบเจาะลึกความขัดแย้งและการยุติความร่วมมือข้ามชาติกว่า 2 ทศวรรษ ระหว่าง FamilyMart Japan และ Ting Hsin")}
+                           "บทวิเคราะห์เชิงโต้ตอบเจาะลึกความขัดแย้งและการยุติความร่วมมือข้ามชาติกว่า 2 ทศวรรษ")}
                       </p>
                     </header>
 
@@ -148,7 +209,7 @@
                         onClick={() => setLang('EN')}
                         className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${lang === 'EN' ? 'bg-slate-100 text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
                       >
-                        <i className="fas fa-language mr-2"></i>EN
+                        <i className="fas fa-language mr-2"></i> EN
                       </button>
                       <button 
                         onClick={() => setLang('TH')}
@@ -489,17 +550,69 @@
                   {/* --- TAB CONTENT: STRATEGY DISPUTE & MAP --- */}
                   {activeTab === 'strategy' && (
                     <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
-                        
                         <div className="mb-8">
-                            <h3 className="text-2xl font-black text-slate-800 mb-2 flex items-center gap-3">
-                                <i className="fas fa-map-marked-alt text-indigo-500"></i> {t("The Geographic Expansion Dispute", "ข้อพิพาทด้านการขยายภูมิภาค")}
-                            </h3>
-                            <p className="text-slate-500 text-sm">{t("A visual representation of the core strategic conflict between the two partners.", "ภาพแสดงความขัดแย้งเชิงกลยุทธ์หลักระหว่างพันธมิตรทั้งสอง")}</p>
+                            <h3 className="text-2xl font-black text-slate-800 mb-2 flex items-center gap-3"><i className="fas fa-map-marked-alt text-indigo-500"></i> {t("The Geographic Expansion Dispute", "ข้อพิพาทด้านการขยายภูมิภาค")}</h3>
+                            <p className="text-slate-500 text-sm">{t("A visual representation of the core strategic conflict. Hover over the subtle dots to view city data.", "ภาพแสดงความขัดแย้งเชิงกลยุทธ์หลัก วางเมาส์เหนือจุดบนแผนที่เพื่อดูข้อมูลเมือง")}</p>
                         </div>
+                        
+                        {/* Map Container */}
+                        <div 
+                            ref={mapRef}
+                            className="relative w-full max-w-4xl mx-auto bg-slate-50 rounded-xl overflow-hidden shadow-inner border border-slate-200 mb-6 select-none"
+                            onMouseMove={handleDragMove}
+                            onMouseUp={handleDragEnd}
+                            onMouseLeave={handleDragEnd}
+                            onTouchMove={handleDragMove}
+                            onTouchEnd={handleDragEnd}
+                        >
+                            
+                            {/* Map Image replacing CSS background for accurate scaling */}
+                            <img 
+                                src="./china-map.jpg" 
+                                alt="Map of China" 
+                                className="w-full h-auto block"
+                                onError={(e) => {
+                                    e.target.onerror = null; 
+                                    e.target.src = 'https://placehold.co/1000x800/e2e8f0/475569?text=Map+Placeholder';
+                                }}
+                            />
 
-                        {/* MAP CONTAINER (Height increased for better visibility, pins removed) */}
-                        <div className="relative w-full max-w-4xl mx-auto h-[700px] bg-slate-50 rounded-xl overflow-hidden shadow-inner border border-slate-200 mb-10">
-                            <div className="absolute inset-0 w-full h-full china-map-bg"></div>
+                            {/* Interactive Hover Zones Container */}
+                            <div className="absolute inset-0 w-full h-full">
+                                {interactiveCities.map(city => (
+                                    <div
+                                        key={city.id}
+                                        className={`absolute w-8 h-8 -ml-4 -mt-8 ${draggingCityId === city.id ? 'cursor-grabbing z-50' : 'cursor-grab z-10'} flex items-center justify-center group`}
+                                        style={{ top: city.top, left: city.left }}
+                                        onMouseEnter={() => !draggingCityId && setHoveredCity(city)}
+                                        onMouseLeave={() => !draggingCityId && setHoveredCity(null)}
+                                        onMouseDown={(e) => handleDragStart(e, city.id)}
+                                        onTouchStart={(e) => handleDragStart(e, city.id)}
+                                    >
+                                        {/* Map Marker Icon */}
+                                        <i className={`fas fa-map-marker-alt text-3xl ${themeClasses[city.theme].text} drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] opacity-90 ${draggingCityId === city.id ? 'scale-110 -translate-y-2' : 'group-hover:opacity-100 group-hover:-translate-y-1'} transition-all duration-200`}></i>
+                                    </div>
+                                ))}
+
+                                {/* Tooltip Overlay */}
+                                {hoveredCity && !draggingCityId && (
+                                    <div 
+                                        className="absolute z-30 bg-white/95 p-4 rounded-xl shadow-xl border border-slate-200 pointer-events-none transform -translate-x-1/2 -translate-y-full mt-[-35px] w-56 transition-all duration-200"
+                                        style={{ top: hoveredCity.top, left: hoveredCity.left }}
+                                    >
+                                        <div className={`text-[10px] font-bold ${themeClasses[hoveredCity.theme].badgeText} ${themeClasses[hoveredCity.theme].bg} px-2 py-0.5 rounded inline-block mb-1.5 uppercase tracking-wider`}>
+                                            {hoveredCity.tier}
+                                        </div>
+                                        <h4 className="text-lg font-black text-slate-800 mb-2">{hoveredCity.name}</h4>
+                                        <div className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-2">
+                                            <p className="flex justify-between items-center"><span>Pop (2019):</span> <span className="font-bold text-slate-800">{hoveredCity.pop}</span></p>
+                                            <p className="flex justify-between items-center"><span>GDP (2019):</span> <span className="font-bold text-slate-800">{hoveredCity.gdp}</span></p>
+                                        </div>
+                                        {/* Tooltip Arrow */}
+                                        <div className="absolute w-3 h-3 bg-white border-b border-r border-slate-200 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-[7px]"></div>
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Map Color Legend - Bottom Right */}
                             <div className="absolute bottom-4 right-4 bg-white/95 p-3 rounded-xl border border-slate-200 shadow-md z-20">
@@ -513,24 +626,25 @@
                                     <div className="flex items-center gap-2"><div className="w-3 h-3 bg-white border border-slate-300 shadow-sm"></div>{t("Tier 5", "ระดับ 5")}</div>
                                 </div>
                             </div>
-
-                            <div className="absolute top-4 left-4 bg-white/95 p-4 rounded-xl border-l-4 border-orange-500 shadow-md max-w-[260px] z-10">
-                                <div className="text-orange-600 font-bold text-sm mb-1 flex items-center"><i className="fas fa-arrow-right mr-2"></i> {t("Ting Hsin Expansion", "การขยายตัวของ Ting Hsin")}</div>
-                                <p className="text-xs text-slate-600 leading-relaxed">{t("Pushing inland into Tier 2/3 cities for market share.", "รุกเข้าสู่เมืองรองเพื่อชิงส่วนแบ่งตลาด")}</p>
-                            </div>
-
-                            <div className="absolute bottom-4 left-4 bg-white/95 p-4 rounded-xl border-l-4 border-red-600 shadow-md max-w-[260px] z-10">
-                                <div className="text-red-600 font-bold text-sm mb-1 flex items-center"><i className="fas fa-shield-alt mr-2"></i> {t("FM Japan Focus", "จุดเน้นของ FM Japan")}</div>
-                                <p className="text-xs text-slate-600 leading-relaxed">{t("Defend and saturate coastal Tier 1 mega-cities where premium products sell best.", "ปกป้องและเจาะลึกในมหานครชายฝั่งระดับ 1 ซึ่งสินค้าพรีเมียมขายได้ดีที่สุด")}</p>
-                            </div>
                         </div>
+
+                        {/* Drag Data Output (For configuration) */}
+                        <details className="bg-slate-800 rounded-xl shadow-inner text-green-400 font-mono text-xs mb-10 border border-slate-700">
+                            <summary className="p-3 cursor-pointer flex justify-between items-center font-bold text-slate-300 hover:text-white transition-colors select-none">
+                                <span>📍 Live Pin Config (Click to Expand)</span>
+                                {draggingCityId && <span className="text-yellow-400 animate-pulse font-normal">Dragging...</span>}
+                            </summary>
+                            <div className="p-4 pt-0 overflow-auto max-h-48 border-t border-slate-700">
+                                <pre className="mt-2">{interactiveCities.map(c => `{ id: '${c.id}', top: '${c.top}', left: '${c.left}' }`).join(',\n')}</pre>
+                            </div>
+                        </details>
 
                         {/* Analysis Text Below Map */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
                                 <h4 className="text-lg font-bold text-slate-800 mb-3"><i className="fas fa-city text-slate-400 mr-2"></i>{t("City Tiers Explained", "อธิบายระดับเมือง")}</h4>
-                                <p className="text-sm text-slate-600 leading-relaxed mb-3"><strong>{t("Tier 1:", "ระดับ 1:")}</strong> {t("Wealthy megacities (Shanghai, Beijing). Consumers pay premiums for quality fresh food. High density allows efficient cold-chain logistics.", "มหานครที่มั่งคั่ง ผู้บริโภคยอมจ่ายเพื่อคุณภาพ โลจิสติกส์ความเย็นมีประสิทธิภาพสูง")}</p>
-                                <p className="text-sm text-slate-600 leading-relaxed"><strong>{t("Tier 2/3:", "ระดับ 2/3:")}</strong> {t("Massive populations but more price-sensitive. Requires aggressive 'land-grab' strategies to beat local competitors.", "ประชากรมหาศาลแต่อ่อนไหวต่อราคา ต้องใช้กลยุทธ์ยึดพื้นที่เชิงรุกเพื่อชนะคู่แข่งท้องถิ่น")}</p>
+                                <p className="text-sm text-slate-600 leading-relaxed mb-3"><strong>{t("Tier 1 Focus:", "จุดเน้นเมืองระดับ 1:")}</strong> {t("FamilyMart Japan wanted to exclusively operate in wealthy megacities (Shanghai, Beijing) where consumers pay premiums for quality fresh food.", "FamilyMart Japan ต้องการดำเนินธุรกิจเฉพาะในมหานครที่มั่งคั่ง (เซี่ยงไฮ้, ปักกิ่ง) ซึ่งผู้บริโภคยอมจ่ายเพื่อคุณภาพอาหารสด")}</p>
+                                <p className="text-sm text-slate-600 leading-relaxed"><strong>{t("Tier 2/3 Conflict:", "ความขัดแย้งเมืองระดับ 2/3:")}</strong> {t("Ting Hsin wanted to aggressively expand inland to capture market share, but FamilyMart Japan blocked this move, causing major strategic friction.", "Ting Hsin ต้องการขยายสาขาเชิงรุกสู่ตอนในของประเทศเพื่อชิงส่วนแบ่งตลาด แต่ถูก FamilyMart Japan ขัดขวาง จนเกิดความขัดแย้งเชิงกลยุทธ์ครั้งใหญ่")}</p>
                             </div>
                             <div className="bg-red-50 p-6 rounded-xl border border-red-100">
                                 <h4 className="text-lg font-bold text-red-900 mb-3"><i className="fas fa-file-invoice-dollar text-red-500 mr-2"></i>{t("The Financial Blackout", "การปกปิดข้อมูลทางการเงิน")}</h4>
@@ -664,7 +778,7 @@
                                         <p className="text-xs text-slate-600">{t("Detail the strategic disputes, the financial data blackout, and the bitter lawsuit.", "ให้รายละเอียดข้อพิพาทกลยุทธ์ การปกปิดข้อมูลเงิน และคดีความ")}</p>
                                     </div>
                                     <ul className="text-sm text-slate-700 space-y-2 list-disc pl-4">
-                                        <li><strong>Geography:</strong> FM wanted coastal Tier 1. Ting Hsin aggressively pushed Tier 2/3.</li>
+                                        <li><strong>Geography:</strong> FM Japan refused to expand beyond Tier 1. Ting Hsin desperately wanted to enter Tier 2/3 cities but was blocked.</li>
                                         <li><strong>Royalties:</strong> Ting Hsin stopped paying the 1% fee, demanding 0.3% like rivals.</li>
                                         <li><strong>Data Blackout:</strong> Ting Hsin sourced 40% from own factories. Stopped sharing financial data in 2012, breaking all trust.</li>
                                         <li><strong>Lawsuit:</strong> FM sues in Cayman Islands (2018) for dissolution. Leads to 5-year deadlock.</li>
@@ -698,15 +812,6 @@
 
             const root = ReactDOM.createRoot(document.getElementById('root'));
             root.render(<App />);
-
-        } catch (error) {
-            console.error("Dashboard failed to load:", error);
-            document.getElementById('root').innerHTML = `
-                <div style="padding: 40px; color: #ef4444; text-align: center;">
-                    <h2>Failed to load. Please check console.</h2>
-                </div>
-            `;
-        }
     </script>
 </body>
 </html>
