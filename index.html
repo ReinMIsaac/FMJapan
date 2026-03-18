@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FamilyMart in China: Partnership Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- React & Dependencies (Stable Versions) -->
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js"></script>
+    <script crossorigin src="https://unpkg.com/recharts@2.10.3/umd/Recharts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .loading-screen { display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; color: #475569; }
+        .china-map-bg {
+            background-image: url('./china-map.jpg');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="loading-screen">
+            <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-[#00A54F]"></i>
+            <h2 class="text-xl font-bold">Loading Dashboard...</h2>
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+            const [activeTab, setActiveTab] = useState('overview');
+            const [lang, setLang] = useState('EN');
+            const [libsLoaded, setLibsLoaded] = useState(false);
+
+            // Wait for Recharts to be available on window
+            useEffect(() => {
+                const checkLibs = setInterval(() => {
+                    if (window.Recharts) {
+                        setLibsLoaded(true);
+                        clearInterval(checkLibs);
+                    }
+                }, 100);
+                return () => clearInterval(checkLibs);
+            }, []);
+
+            if (!libsLoaded) {
+                return (
+                    <div className="loading-screen">
+                        <i className="fas fa-circle-notch fa-spin text-4xl mb-4 text-[#00A54F]"></i>
+                        <h2 className="text-xl font-bold">Initializing Components...</h2>
+                    </div>
+                );
+            }
+
+            const { 
+              BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+              PieChart, Pie, Cell, AreaChart, Area, ComposedChart
+            } = window.Recharts;
+
+            const t = (en, th) => lang === 'EN' ? en : th;
+
+            // --- Data ---
+            const marketGrowthData = [
+              { year: '2016', stores: 94000, growth: 3 },
+              { year: '2017', stores: 106000, growth: 13 },
+              { year: '2018', stores: 122000, growth: 15 },
+              { year: '2019', stores: 132000, growth: 9 },
+            ];
+
+            const competitiveSalesData = [
+              { year: '2017', FamilyMart: 802.58, '7-Eleven': 466.66, Lawson: 310.96 },
+              { year: '2018', FamilyMart: 949.08, '7-Eleven': 584.73, Lawson: 429.10 },
+              { year: '2019', FamilyMart: 1003.00, '7-Eleven': 738.82, Lawson: 596.45 },
+            ];
+
+            const competitiveStoresData = [
+              { year: '2017', FamilyMart: 2181, '7-Eleven': 1699, Lawson: 1399 },
+              { year: '2018', FamilyMart: 2571, '7-Eleven': 1802, Lawson: 1973 },
+              { year: '2019', FamilyMart: 2801, '7-Eleven': 2147, Lawson: 2629 },
+            ];
+
+            const chinaMarketShare = [
+              { name: 'Meiyijia', value: 12 },
+              { name: 'FamilyMart', value: 8 },
+              { name: 'Hongqi', value: 8 },
+              { name: 'Lawson', value: 6 },
+              { name: '7-Eleven', value: 2 },
+              { name: 'Others', value: 64 },
+            ];
+
+            const japanMarketShare = [
+              { name: '7-Eleven', value: 44 },
+              { name: 'FamilyMart', value: 26 },
+              { name: 'Lawson', value: 20 },
+              { name: 'Others', value: 10 },
+            ];
+
+            const exhibit3Ownership = [
+              { name: 'Ting Hsin Int. Group', value: 59.65, color: '#003882' },
+              { name: 'FM China Holding (Japan/Itochu)', value: 22.05, color: '#00A54F' },
+              { name: 'FamilyMart Taiwan', value: 18.30, color: '#10b981' },
+            ];
+
+            const BRAND_COLORS = { 
+                'FamilyMart': '#00A54F', 
+                '7-Eleven': '#f97316', 
+                'Lawson': '#3b82f6',
+                'Meiyijia': '#ef4444',
+                'Hongqi': '#8b5cf6',
+                'Others': '#9ca3af'
+            };
+
+            return (
+                <div className="min-h-screen p-4 md:p-8 max-w-[1400px] mx-auto text-slate-800">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                    <header>
+                      <h1 className="text-3xl md:text-4xl font-black text-slate-900 flex items-center gap-3 mb-2 tracking-tight">
+                        <i className="fas fa-store text-[#00A54F]"></i>
+                        {t("FamilyMart in China: Partnership Dashboard", "แดชบอร์ดวิเคราะห์ความร่วมมือ: แฟมิลี่มาร์ทในประเทศจีน")}
+                      </h1>
+                    </header>
+                    <div className="flex bg-white p-1 rounded-lg border border-slate-200 shadow-sm shrink-0">
+                      <button onClick={() => setLang('EN')} className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${lang === 'EN' ? 'bg-slate-100 text-blue-600' : 'text-slate-500'}`}>EN</button>
+                      <button onClick={() => setLang('TH')} className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${lang === 'TH' ? 'bg-slate-100 text-blue-600' : 'text-slate-500'}`}>TH</button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex items-center space-x-4">
+                      <div className="bg-green-50 p-4 rounded-xl text-[#00A54F]"><i className="fas fa-store text-2xl"></i></div>
+                      <div><p className="text-xs text-slate-500 font-semibold uppercase">{t("Stores (2019)", "สาขา (2019)")}</p><h3 className="text-3xl font-black">2,801</h3></div>
+                    </div>
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex items-center space-x-4">
+                      <div className="bg-blue-50 p-4 rounded-xl text-blue-600"><i className="fas fa-yen-sign text-2xl"></i></div>
+                      <div><p className="text-xs text-slate-500 font-semibold uppercase">{t("Sales (2019)", "ยอดขาย (2019)")}</p><h3 className="text-3xl font-black">¥1.00B</h3></div>
+                    </div>
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex items-center space-x-4">
+                      <div className="bg-orange-50 p-4 rounded-xl text-orange-500"><i className="fas fa-chart-line text-2xl"></i></div>
+                      <div><p className="text-xs text-slate-500 font-semibold uppercase">{t("Market Size", "ขนาดตลาด")}</p><h3 className="text-3xl font-black">132k</h3></div>
+                    </div>
+                    <div className="bg-white rounded-xl shadow-sm border-l-4 border-l-red-500 p-6 flex items-center space-x-4">
+                      <div className="bg-red-50 p-4 rounded-xl text-red-600"><i className="fas fa-exclamation-triangle text-2xl"></i></div>
+                      <div><p className="text-xs text-slate-500 font-semibold uppercase">{t("Royalty Dispute", "ข้อพิพาทค่าสิทธิ์")}</p><h3 className="text-xl font-black text-red-700">1.0% vs 0.3%</h3></div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 mb-8 bg-slate-200/50 p-1.5 rounded-xl border border-slate-200">
+                    {['overview', 'partners', 'strategy', 'dispute', 'resolution', 'presentation'].map(tkey => (
+                      <button key={tkey} onClick={() => setActiveTab(tkey)} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all ${activeTab === tkey ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>
+                        {t(tkey.charAt(0).toUpperCase() + tkey.slice(1), {overview: 'ตลาด', partners: 'พันธมิตร', strategy: 'กลยุทธ์', dispute: 'ไทม์ไลน์', resolution: 'บทสรุป', presentation: 'คู่มือนำเสนอ'}[tkey])}
+                      </button>
+                    ))}
+                  </div>
+
+                  {activeTab === 'overview' && (
+                    <div className="space-y-6 animate-in fade-in duration-300">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                          <h3 className="text-lg font-bold mb-4">{t("Foreign Brand Sales (¥ Millions)", "ยอดขายแบรนด์ต่างชาติ (ล้านหยวน)")}</h3>
+                          <div className="h-72"><ResponsiveContainer><BarChart data={competitiveSalesData}><CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="year"/><YAxis/><Tooltip/><Legend/><Bar dataKey="FamilyMart" fill={BRAND_COLORS.FamilyMart}/><Bar dataKey="7-Eleven" fill={BRAND_COLORS['7-Eleven']}/><Bar dataKey="Lawson" fill={BRAND_COLORS.Lawson}/></BarChart></ResponsiveContainer></div>
+                        </div>
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                          <h3 className="text-lg font-bold mb-4">{t("JV Ownership (Exhibit 3)", "โครงสร้างผู้ถือหุ้น (เอกสาร 3)")}</h3>
+                          <div className="h-72"><ResponsiveContainer><PieChart><Pie data={exhibit3Ownership} innerRadius={60} outerRadius={90} dataKey="value" label>{exhibit3Ownership.map((e, i) => <Cell key={i} fill={e.color}/>)}</Pie><Tooltip/></PieChart></ResponsiveContainer></div>
+                        </div>
+                      </div>
+                      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                          <h3 className="text-lg font-bold mb-6 text-center">{t("2019 Market Share: China vs Japan", "ส่วนแบ่งการตลาด 2019")}</h3>
+                          <div className="flex flex-col md:flex-row h-64 items-center justify-around">
+                            <div className="w-full md:w-1/2 h-full flex flex-col items-center">
+                              <span className="text-sm font-semibold text-slate-500 mb-2">China</span>
+                              <ResponsiveContainer><PieChart><Pie data={chinaMarketShare} innerRadius={40} outerRadius={80} dataKey="value">{chinaMarketShare.map((e, i) => <Cell key={i} fill={BRAND_COLORS[e.name] || '#9ca3af'}/>)}</Pie><Tooltip/></PieChart></ResponsiveContainer>
+                            </div>
+                            <div className="w-full md:w-1/2 h-full flex flex-col items-center">
+                              <span className="text-sm font-semibold text-slate-500 mb-2">Japan</span>
+                              <ResponsiveContainer><PieChart><Pie data={japanMarketShare} innerRadius={40} outerRadius={80} dataKey="value">{japanMarketShare.map((e, i) => <Cell key={i} fill={BRAND_COLORS[e.name] || '#9ca3af'}/>)}</Pie><Tooltip/></PieChart></ResponsiveContainer>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'strategy' && (
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
+                        <div className="mb-8">
+                            <h3 className="text-2xl font-black text-slate-800 mb-2 flex items-center gap-3"><i className="fas fa-map-marked-alt text-indigo-500"></i> {t("Geographic Expansion Dispute", "ข้อพิพาทการขยายพื้นที่")}</h3>
+                            <p className="text-slate-500 text-sm">{t("Strategy map based on provided regional data.", "แผนที่กลยุทธ์ตามข้อมูลภูมิภาค")}</p>
+                        </div>
+                        <div className="relative w-full max-w-4xl mx-auto h-[700px] bg-slate-50 rounded-xl overflow-hidden shadow-inner border border-slate-200 mb-10">
+                            <div className="absolute inset-0 w-full h-full china-map-bg"></div>
+                            
+                            <div className="absolute top-4 left-4 bg-white/95 p-4 rounded-xl border-l-4 border-orange-500 shadow-md max-w-[260px] z-10">
+                                <div className="text-orange-600 font-bold text-sm mb-1 flex items-center"><i className="fas fa-arrow-right mr-2"></i> {t("Ting Hsin Expansion", "การรุกตลาดของ Ting Hsin")}</div>
+                                <p className="text-xs text-slate-600 leading-relaxed">{t("Aggressive push into Tier 2/3 inland cities for national scale.", "รุกเข้าสู่เมืองรองระดับ 2/3 เพื่อขยายสเกลระดับประเทศ")}</p>
+                            </div>
+
+                            <div className="absolute bottom-4 left-4 bg-white/95 p-4 rounded-xl border-l-4 border-red-600 shadow-md max-w-[260px] z-10">
+                                <div className="text-red-600 font-bold text-sm mb-1 flex items-center"><i className="fas fa-shield-alt mr-2"></i> {t("FM Japan Focus", "จุดเน้นของ FM Japan")}</div>
+                                <p className="text-xs text-slate-600 leading-relaxed">{t("Protect Tier 1 premium margins and logistical density.", "รักษาอัตรากำไรพรีเมียมในเมืองหลักระดับ 1")}</p>
+                            </div>
+                        </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'dispute' && (
+                    <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                        <h3 className="text-2xl font-bold mb-8">{t("The Legal Timeline", "ไทม์ไลน์คดีความ")}</h3>
+                        <div className="relative border-l-2 border-slate-200 ml-4 space-y-8">
+                            <div className="relative pl-6">
+                              <div className="absolute w-4 h-4 bg-slate-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                              <p className="text-sm text-slate-500 font-bold">Oct 2018</p>
+                              <h4 className="text-lg font-bold">FamilyMart Files Lawsuit</h4>
+                              <p className="text-sm text-slate-600">Requesting JV dissolution in Cayman Islands.</p>
+                            </div>
+                            <div className="relative pl-6">
+                              <div className="absolute w-4 h-4 bg-red-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                              <p className="text-sm text-red-500 font-bold">Sep 2023</p>
+                              <h4 className="text-lg font-bold">Privy Council Ruling</h4>
+                              <p className="text-sm text-slate-600">Dispute mandated to arbitration before court action.</p>
+                            </div>
+                            <div className="relative pl-6">
+                              <div className="absolute w-4 h-4 bg-green-500 rounded-full -left-[9px] top-1 border-2 border-white"></div>
+                              <p className="text-sm text-green-600 font-bold">Mar 2024</p>
+                              <h4 className="text-lg font-bold">Restructuring Deal</h4>
+                              <p className="text-sm text-slate-600">Agreement reached to split operations.</p>
+                            </div>
+                        </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'presentation' && (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-300">
+                        <div className="bg-white p-6 rounded-xl shadow-sm border-t-4 border-t-[#00A54F]">
+                            <h3 className="text-xl font-bold mb-4">Speaker 1: Setup</h3>
+                            <ul className="text-sm space-y-2 list-disc pl-4">
+                                <li><strong>Context:</strong> Explain Build-Borrow-Buy framework.</li>
+                                <li><strong>JV Logic:</strong> Local assets (Ting Hsin) + Brand (Japan).</li>
+                                <li><strong>KPIs:</strong> Show success (2,800 stores).</li>
+                            </ul>
+                        </div>
+                        <div className="bg-white p-6 rounded-xl shadow-sm border-t-4 border-t-red-500">
+                            <h3 className="text-xl font-bold mb-4">Speaker 2: Conflict</h3>
+                            <ul className="text-sm space-y-2 list-disc pl-4">
+                                <li><strong>Strategic Rift:</strong> Inland vs Coastal expansion.</li>
+                                <li><strong>Trust:</strong> Royalty fee refusal & data blackout.</li>
+                                <li><strong>Litigation:</strong> The Cayman lawsuit escalation.</li>
+                            </ul>
+                        </div>
+                        <div className="bg-white p-6 rounded-xl shadow-sm border-t-4 border-t-blue-500">
+                            <h3 className="text-xl font-bold mb-4">Speaker 3: Resolution</h3>
+                            <ul className="text-sm space-y-2 list-disc pl-4">
+                                <li><strong>Alliance Evolution:</strong> Asymmetric learning over 20 years.</li>
+                                <li><strong>BATNA:</strong> Why settlement was better than dissolution.</li>
+                                <li><strong>The Deal:</strong> Ting Hsin keeps Shanghai hub; FM keeps the rest.</li>
+                            </ul>
+                        </div>
+                    </div>
+                  )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+    </script>
+</body>
+</html>
