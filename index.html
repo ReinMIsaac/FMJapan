@@ -39,7 +39,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // Interactive Cities Data (Initial Data moved outside component to prevent recreation and allow hook usage)
+        // Interactive Cities Data
         const initialInteractiveCities = [
             { id: 'beijing', name: 'Beijing', tier: 'Tier 1', pop: '21.54 Million', gdp: '¥3.5 Trillion', top: '41%', left: '74%', theme: 'tier1' },
             { id: 'shanghai', name: 'Shanghai', tier: 'Tier 1 Hub', pop: '24.28 Million', gdp: '¥3.8 Trillion', top: '65%', left: '84%', theme: 'tier1' },
@@ -66,7 +66,6 @@
         function App() {
             // ALL Hooks must be called before any early returns
             const [activeTab, setActiveTab] = useState('overview');
-            const [lang, setLang] = useState('EN');
             const [ready, setReady] = useState(false);
             const [hoveredCity, setHoveredCity] = useState(null);
             
@@ -93,8 +92,6 @@
               BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
               PieChart, Pie, Cell, AreaChart, Area, ComposedChart
             } = window.Recharts;
-
-            const t = (en, th) => lang === 'EN' ? en : th;
 
             // --- Data ---
             const marketGrowthData = [
@@ -152,7 +149,7 @@
             const handleDragStart = (e, id) => {
                 e.preventDefault();
                 setDraggingCityId(id);
-                setHoveredCity(null); // Hide tooltip while dragging
+                setHoveredCity(null); 
             };
 
             const handleDragMove = (e) => {
@@ -195,29 +192,12 @@
                     <header>
                       <h1 className="text-3xl md:text-4xl font-black text-slate-900 flex items-center gap-3 mb-2 tracking-tight">
                         <i className="fas fa-store text-[#00A54F]"></i>
-                        {t("FamilyMart in China: Partnership Dashboard", "แดชบอร์ดวิเคราะห์ความร่วมมือ: แฟมิลี่มาร์ทในประเทศจีน")}
+                        FamilyMart in China: Partnership Dashboard
                       </h1>
                       <p className="text-slate-500 text-lg max-w-3xl">
-                        {t("An interactive analysis of the 20-year international partnership divorce between FamilyMart Japan and Ting Hsin.", 
-                           "บทวิเคราะห์เชิงโต้ตอบเจาะลึกความขัดแย้งและการยุติความร่วมมือข้ามชาติกว่า 2 ทศวรรษ")}
+                        An interactive analysis of the 20-year international partnership divorce between FamilyMart Japan and Ting Hsin.
                       </p>
                     </header>
-
-                    {/* Language Switcher */}
-                    <div className="flex bg-white p-1 rounded-lg border border-slate-200 items-center shrink-0 shadow-sm">
-                      <button 
-                        onClick={() => setLang('EN')}
-                        className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${lang === 'EN' ? 'bg-slate-100 text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
-                      >
-                        <i className="fas fa-language mr-2"></i> EN
-                      </button>
-                      <button 
-                        onClick={() => setLang('TH')}
-                        className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${lang === 'TH' ? 'bg-slate-100 text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
-                      >
-                        TH
-                      </button>
-                    </div>
                   </div>
 
                   {/* KPI Cards */}
@@ -227,9 +207,9 @@
                         <i className="fas fa-store text-2xl"></i>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{t("FamilyMart CN Stores (2019)", "จำนวนสาขาในจีน (2019)")}</p>
+                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">FamilyMart CN Stores (2019)</p>
                         <h3 className="text-3xl font-black text-slate-800">2,801</h3>
-                        <p className="text-xs text-green-600 font-medium mt-1">{t("#1 Foreign Brand Market Share", "ส่วนแบ่งอันดับ 1 ในกลุ่มแบรนด์ต่างชาติ")}</p>
+                        <p className="text-xs text-green-600 font-medium mt-1">#1 Foreign Brand Market Share</p>
                       </div>
                     </div>
 
@@ -238,9 +218,9 @@
                         <i className="fas fa-yen-sign text-2xl"></i>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{t("FamilyMart CN Sales (2019)", "ยอดขายในประเทศจีน (2019)")}</p>
-                        <h3 className="text-3xl font-black text-slate-800">{t("¥1.00B", "1.00 พันล้านหยวน")}</h3>
-                        <p className="text-xs text-blue-600 font-medium mt-1">{t("+5.7% YOY Growth", "เติบโต +5.7% (YOY)")}</p>
+                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">FamilyMart CN Sales (2019)</p>
+                        <h3 className="text-3xl font-black text-slate-800">¥1.00B</h3>
+                        <p className="text-xs text-blue-600 font-medium mt-1">+5.7% YOY Growth</p>
                       </div>
                     </div>
 
@@ -249,9 +229,9 @@
                         <i className="fas fa-chart-line text-2xl"></i>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{t("China Market Size", "ขนาดตลาดจีนโดยรวม")}</p>
+                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">China Market Size</p>
                         <h3 className="text-3xl font-black text-slate-800">132,000</h3>
-                        <p className="text-xs text-orange-600 font-medium mt-1">{t("Total C-Stores in 2019", "จำนวนร้านสะดวกซื้อทั้งหมดในปี 2019")}</p>
+                        <p className="text-xs text-orange-600 font-medium mt-1">Total C-Stores in 2019</p>
                       </div>
                     </div>
 
@@ -263,38 +243,35 @@
                         <i className="fas fa-exclamation-triangle text-2xl"></i>
                       </div>
                       <div className="z-10">
-                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{t("Core Dispute: Royalty Fees", "ข้อพิพาทหลัก: ค่าลิขสิทธิ์")}</p>
-                        <h3 className="text-2xl font-black text-slate-800">{t("1.00% vs 0.30%", "1.00% เทียบกับ 0.30%")}</h3>
-                        <p className="text-[10px] text-red-600 font-medium mt-1 leading-tight">{t("FM's demanded rate vs. Ting Hsin's desired rate.", "อัตราที่แฟมิลี่มาร์ทเรียกเก็บ เทียบกับอัตราที่ Ting Hsin ขอ")}</p>
+                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Core Dispute: Royalty Fees</p>
+                        <h3 className="text-2xl font-black text-slate-800">1.00% vs 0.30%</h3>
+                        <p className="text-[10px] text-red-600 font-medium mt-1 leading-tight">FM's demanded rate vs. Ting Hsin's desired rate.</p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Clean 1-Row Tabs Navigation */}
+                  {/* Clean Tabs Navigation */}
                   <div className="flex flex-wrap items-center gap-2 mb-8 bg-slate-200/50 p-1.5 rounded-xl border border-slate-200">
                     <button onClick={() => setActiveTab('overview')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'overview' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
-                      <i className="fas fa-chart-bar mr-2 text-slate-400"></i>{t("Market Data", "ข้อมูลการตลาด")}
-                    </button>
-                    <button onClick={() => setActiveTab('cstore-history')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'cstore-history' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
-                      <i className="fas fa-history mr-2 text-slate-400"></i>{t("C-Store History", "ประวัติร้านสะดวกซื้อ")}
+                      <i className="fas fa-chart-bar mr-2 text-slate-400"></i>Market Data
                     </button>
                     <button onClick={() => setActiveTab('partners')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'partners' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
-                      <i className="fas fa-building mr-2 text-slate-400"></i>{t("The Partners", "ข้อมูลพันธมิตร")}
+                      <i className="fas fa-users mr-2 text-slate-400"></i>The Partners
                     </button>
                     <button onClick={() => setActiveTab('strategy')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'strategy' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
-                      <i className="fas fa-chess-knight mr-2 text-slate-400"></i>{t("Strategy Dispute", "ข้อพิพาทเชิงกลยุทธ์")}
+                      <i className="fas fa-chess-knight mr-2 text-slate-400"></i>Strategy Dispute
+                    </button>
+                    <button onClick={() => setActiveTab('legal')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'legal' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
+                      <i className="fas fa-gavel mr-2 text-slate-400"></i>Legal Battle
+                    </button>
+                    <button onClick={() => setActiveTab('negotiation')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'negotiation' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
+                      <i className="fas fa-handshake-angle mr-2 text-slate-400"></i>Negotiation (BATNA)
                     </button>
                     <button onClick={() => setActiveTab('dispute')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'dispute' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
-                      <i className="fas fa-balance-scale mr-2 text-slate-400"></i>{t("Timeline", "ลำดับเหตุการณ์")}
+                      <i className="fas fa-stream mr-2 text-slate-400"></i>Timeline
                     </button>
                     <button onClick={() => setActiveTab('resolution')} className={`px-4 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center ${activeTab === 'resolution' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
-                      <i className="fas fa-handshake mr-2 text-slate-400"></i>{t("2024 Resolution", "บทสรุปปี 2024")}
-                    </button>
-                    
-                    <div className="flex-grow"></div> {/* Spacer */}
-                    
-                    <button onClick={() => setActiveTab('presentation')} className={`px-5 py-2.5 text-sm font-bold rounded-lg transition-all flex items-center border ${activeTab === 'presentation' ? 'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm' : 'bg-white border-slate-200 text-indigo-600 hover:bg-indigo-50 shadow-sm'}`}>
-                      <i className="fas fa-users mr-2"></i>{t("Presentation Guide", "แนวทางการนำเสนอ")}
+                      <i className="fas fa-file-signature mr-2 text-slate-400"></i>2024 Resolution
                     </button>
                   </div>
 
@@ -305,7 +282,7 @@
                       {/* Row 1: Line Charts */}
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center"><i className="fas fa-chart-line text-slate-400 mr-2"></i> {t("Foreign Brand Sales in China (¥ Millions)", "ยอดขายของแบรนด์ต่างชาติในจีน (ล้านหยวน)")}</h3>
+                          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center"><i className="fas fa-chart-line text-slate-400 mr-2"></i> Foreign Brand Sales in China (¥ Millions)</h3>
                           <div className="h-72">
                             <ResponsiveContainer width="100%" height="100%">
                               <BarChart data={competitiveSalesData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
@@ -314,16 +291,16 @@
                                 <YAxis axisLine={false} tickLine={false} />
                                 <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
                                 <Legend iconType="circle" />
-                                <Bar dataKey="FamilyMart" name={t("FamilyMart", "แฟมิลี่มาร์ท")} fill={BRAND_COLORS.FamilyMart} radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="FamilyMart" name="FamilyMart" fill={BRAND_COLORS.FamilyMart} radius={[4, 4, 0, 0]} />
                                 <Bar dataKey="7-Eleven" fill={BRAND_COLORS['7-Eleven']} radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="Lawson" name={t("Lawson", "ลอว์สัน")} fill={BRAND_COLORS.Lawson} radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="Lawson" name="Lawson" fill={BRAND_COLORS.Lawson} radius={[4, 4, 0, 0]} />
                               </BarChart>
                             </ResponsiveContainer>
                           </div>
                         </div>
 
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center"><i className="fas fa-store text-slate-400 mr-2"></i> {t("Foreign Brand Store Count in China", "จำนวนสาขาของแบรนด์ต่างชาติในจีน")}</h3>
+                          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center"><i className="fas fa-store text-slate-400 mr-2"></i> Foreign Brand Store Count in China</h3>
                           <div className="h-72">
                             <ResponsiveContainer width="100%" height="100%">
                               <LineChart data={competitiveStoresData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
@@ -332,9 +309,9 @@
                                 <YAxis axisLine={false} tickLine={false} domain={['dataMin - 200', 'dataMax + 200']} />
                                 <Tooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
                                 <Legend iconType="circle" />
-                                <Line type="monotone" dataKey="FamilyMart" name={t("FamilyMart", "แฟมิลี่มาร์ท")} stroke={BRAND_COLORS.FamilyMart} strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
+                                <Line type="monotone" dataKey="FamilyMart" name="FamilyMart" stroke={BRAND_COLORS.FamilyMart} strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
                                 <Line type="monotone" dataKey="7-Eleven" stroke={BRAND_COLORS['7-Eleven']} strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
-                                <Line type="monotone" dataKey="Lawson" name={t("Lawson", "ลอว์สัน")} stroke={BRAND_COLORS.Lawson} strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
+                                <Line type="monotone" dataKey="Lawson" name="Lawson" stroke={BRAND_COLORS.Lawson} strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
                               </LineChart>
                             </ResponsiveContainer>
                           </div>
@@ -346,7 +323,7 @@
                         
                         {/* China Total Market Growth */}
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center"><i className="fas fa-chart-area text-slate-400 mr-2"></i> {t("Total C-Stores in China", "ภาพรวมจำนวนร้านสะดวกซื้อในจีน")}</h3>
+                          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center"><i className="fas fa-chart-area text-slate-400 mr-2"></i> Total C-Stores in China</h3>
                           <div className="h-72">
                             <ResponsiveContainer width="100%" height="100%">
                               <ComposedChart data={marketGrowthData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -356,8 +333,8 @@
                                 <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} fontSize={12} domain={[0, 20]} />
                                 <Tooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
                                 <Legend />
-                                <Area yAxisId="left" type="monotone" dataKey="stores" name={t("Total Stores", "จำนวนสาขารวม")} stroke="#8b5cf6" fill="#c4b5fd" fillOpacity={0.4} strokeWidth={2} />
-                                <Line yAxisId="right" type="monotone" dataKey="growth" name={t("Growth Rate (%)", "อัตราการเติบโต (%)")} stroke="#f59e0b" strokeWidth={3} dot={{r: 4}} />
+                                <Area yAxisId="left" type="monotone" dataKey="stores" name="Total Stores" stroke="#8b5cf6" fill="#c4b5fd" fillOpacity={0.4} strokeWidth={2} />
+                                <Line yAxisId="right" type="monotone" dataKey="growth" name="Growth Rate (%)" stroke="#f59e0b" strokeWidth={3} dot={{r: 4}} />
                               </ComposedChart>
                             </ResponsiveContainer>
                           </div>
@@ -369,9 +346,9 @@
                                 <div>
                                     <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
                                         <i className="fas fa-project-diagram text-indigo-500"></i>
-                                        {t("Exhibit 3: JV Ownership (China CVS Holding)", "เอกสารอ้างอิง 3: โครงสร้างผู้ถือหุ้นบริษัทร่วมทุน")}
+                                        Exhibit 3: JV Ownership (China CVS Holding)
                                     </h3>
-                                    <p className="text-xs text-slate-500 mt-1">{t("Ting Hsin held the majority voting rights, giving them local operational control.", "Ting Hsin ถือหุ้นใหญ่ ซึ่งให้สิทธิ์ขาดในการควบคุมการดำเนินงานท้องถิ่น")}</p>
+                                    <p className="text-xs text-slate-500 mt-1">Ting Hsin held the majority voting rights, giving them local operational control.</p>
                                 </div>
                             </div>
                             <div className="flex flex-col md:flex-row items-center justify-center h-64 gap-6">
@@ -405,10 +382,10 @@
                       
                       {/* Row 3: Market Share Pies */}
                       <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                          <h3 className="text-lg font-bold text-slate-800 mb-6 text-center">{t("2019 Market Share: China vs Japan", "ส่วนแบ่งการตลาดปี 2019: ประเทศจีน เทียบกับ ประเทศญี่ปุ่น")}</h3>
+                          <h3 className="text-lg font-bold text-slate-800 mb-6 text-center">2019 Market Share: China vs Japan</h3>
                           <div className="flex flex-col md:flex-row h-64 items-center justify-around mb-4">
                             <div className="w-full md:w-1/2 h-full flex flex-col items-center">
-                              <span className="text-sm font-semibold text-slate-500 mb-2">{t("China Market (Fragmented)", "ตลาดจีน (ผู้เล่นกระจายตัว)")}</span>
+                              <span className="text-sm font-semibold text-slate-500 mb-2">China Market (Fragmented)</span>
                               <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                   <Pie data={chinaMarketShare} cx="50%" cy="50%" innerRadius={40} outerRadius={80} paddingAngle={2} dataKey="value">
@@ -421,7 +398,7 @@
                               </ResponsiveContainer>
                             </div>
                             <div className="w-full md:w-1/2 h-full flex flex-col items-center">
-                              <span className="text-sm font-semibold text-slate-500 mb-2">{t("Japan Market (Oligopoly)", "ตลาดญี่ปุ่น (ผู้ขายน้อยราย)")}</span>
+                              <span className="text-sm font-semibold text-slate-500 mb-2">Japan Market (Oligopoly)</span>
                               <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                   <Pie data={japanMarketShare} cx="50%" cy="50%" innerRadius={40} outerRadius={80} paddingAngle={2} dataKey="value">
@@ -446,212 +423,404 @@
                     </div>
                   )}
 
-                  {/* --- TAB CONTENT: C-STORE HISTORY --- */}
-                  {activeTab === 'cstore-history' && (
-                    <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
-                        <h3 className="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-3">
-                          <i className="fas fa-history text-indigo-500"></i>
-                          {t("The Evolution of Convenience Stores", "วิวัฒนาการของร้านสะดวกซื้อ")}
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                          <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                            <h4 className="font-bold text-slate-800 flex items-center gap-2 mb-3 text-lg"><i className="fas fa-globe text-blue-500"></i> {t("Origins", "จุดกำเนิด")}</h4>
-                            <p className="text-sm text-slate-600 leading-relaxed">
-                              {t("Started in 1927 by John Green at the Southland Ice Company in Texas, selling bread, milk, and eggs from an ice dock. It was rebranded as 7-Eleven in 1946.",
-                                 "เริ่มต้นในปี 1927 โดย John Green ณ บริษัท Southland Ice Company ในรัฐเท็กซัส จำหน่ายขนมปัง นม และไข่ ก่อนจะรีแบรนด์เป็น 7-Eleven ในปี 1946")}
-                            </p>
-                          </div>
-                          <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                            <h4 className="font-bold text-slate-800 flex items-center gap-2 mb-3 text-lg"><i className="fas fa-chart-line text-green-500"></i> {t("Expansion", "การขยายตัว")}</h4>
-                            <p className="text-sm text-slate-600 leading-relaxed">
-                              {t("Expanded rapidly after 7-Eleven began franchising in 1964. Entered Japan in 1973 (Toyosu, Tokyo), Taiwan in 1979, and mainland China (Shenzhen) in 1992.",
-                                 "ขยายตัวอย่างรวดเร็วหลัง 7-Eleven เริ่มระบบแฟรนไชส์ในปี 1964 เข้าสู่ญี่ปุ่นในปี 1973 ไต้หวันปี 1979 และจีนแผ่นดินใหญ่ (เซินเจิ้น) ปี 1992")}
-                            </p>
-                          </div>
-                          <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                            <h4 className="font-bold text-slate-800 flex items-center gap-2 mb-3 text-lg"><i className="fas fa-clock text-orange-500"></i> {t("The Model", "โมเดลธุรกิจ")}</h4>
-                            <p className="text-sm text-slate-600 leading-relaxed">
-                              {t("Characterized by small size (50-200 sqm), 16-24 hour operations, fast checkout, and instant consumption items. Evolved to include fresh food and daily services.",
-                                 "โดดเด่นด้วยขนาดเล็ก (50-200 ตร.ม.) เปิด 16-24 ชม. ชำระเงินรวดเร็ว และเน้นสินค้าพร้อมทาน ปัจจุบันรวมถึงอาหารสดและบริการต่างๆ")}
-                            </p>
-                          </div>
-                        </div>
-                    </div>
-                  )}
-
                   {/* --- TAB CONTENT: THE PARTNERS --- */}
                   {activeTab === 'partners' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in duration-300">
-                        {/* FamilyMart */}
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-[#00A54F]">
-                          <h3 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
-                            <i className="fas fa-store text-[#00A54F]"></i> FAMILYMART JAPAN
-                          </h3>
-                          <p className="text-sm text-slate-600 leading-relaxed mb-8">
-                            {t("FamilyMart (est. 1981) grew to become the world's second-largest C-store chain by 2019. Known for its 'neighborhood family' philosophy, high-quality fresh foods like 'Famichiki', and precise franchise standardization, FamilyMart represents the pinnacle of Japanese retail efficiency.",
-                               "FamilyMart (ก่อตั้งปี 1981) เติบโตจนเป็นเครือข่ายร้านสะดวกซื้ออันดับสองของโลกในปี 2019 ขึ้นชื่อเรื่องปรัชญา 'ครอบครัวในชุมชน' อาหารสดคุณภาพสูง และมาตรฐานแฟรนไชส์ที่รัดกุม")}
-                          </p>
-                          <h4 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100"><i className="fas fa-clock text-slate-400 mr-2"></i>{t("Timeline", "ลำดับเหตุการณ์")}</h4>
-                          <div className="relative border-l-2 border-green-200 ml-3 space-y-6">
-                            <div className="relative pl-6">
-                              <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
-                              <p className="text-xs text-green-600 font-bold">1973</p>
-                              <h4 className="text-sm font-bold text-slate-800">{t("The Experiment", "การทดลองตลาด")}</h4>
-                              <p className="text-xs text-slate-500 mt-1">{t("Started as an experimental store in Saitama Prefecture by Seiyu Stores Ltd.", "เริ่มเป็นร้านทดลองในไซตามะโดยบริษัท Seiyu Stores")}</p>
+                    <div className="space-y-6 animate-in fade-in duration-300">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* FamilyMart */}
+                            <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-[#00A54F]">
+                            <h3 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
+                                <i className="fas fa-store text-[#00A54F]"></i> FAMILYMART JAPAN
+                            </h3>
+                            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                                FamilyMart (est. 1981) grew to become the world's second-largest C-store chain by 2019. Known for its "neighborhood family" philosophy, high-quality fresh foods like "Famichiki", and precise franchise standardization, FamilyMart represents the pinnacle of Japanese retail efficiency.
+                            </p>
+                            <div className="bg-green-50 p-4 rounded-lg border border-green-100 mb-6 text-sm text-slate-700">
+                                <strong>Strategic Need:</strong> FamilyMart possessed superior operational know-how and product development (like bento boxes), but entirely lacked a local footprint in China. To penetrate the market successfully without getting crushed by local regulations, they needed a powerful local ally. They also partnered with Itochu Corporation as a co-investor to handle the vital fresh food production.
                             </div>
-                            <div className="relative pl-6">
-                              <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
-                              <p className="text-xs text-green-600 font-bold">1981</p>
-                              <h4 className="text-sm font-bold text-slate-800">{t("Establishment", "การก่อตั้งบริษัท")}</h4>
-                              <p className="text-xs text-slate-500 mt-1">{t("Officially established. Adopted franchising, opening 1,000 stores in 5 years.", "ก่อตั้งเป็นทางการ นำระบบแฟรนไชส์มาใช้ เปิด 1,000 สาขาใน 5 ปี")}</p>
+
+                            <h4 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100"><i className="fas fa-clock text-slate-400 mr-2"></i>Timeline</h4>
+                            <div className="relative border-l-2 border-green-200 ml-3 space-y-6">
+                                <div className="relative pl-6">
+                                <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                                <p className="text-xs text-green-600 font-bold">1973</p>
+                                <h4 className="text-sm font-bold text-slate-800">The Experiment</h4>
+                                <p className="text-xs text-slate-500 mt-1">Started as an experimental store in Saitama Prefecture by Seiyu Stores Ltd.</p>
+                                </div>
+                                <div className="relative pl-6">
+                                <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                                <p className="text-xs text-green-600 font-bold">1981</p>
+                                <h4 className="text-sm font-bold text-slate-800">Establishment</h4>
+                                <p className="text-xs text-slate-500 mt-1">Officially established. Adopted franchising, opening 1,000 stores in 5 years.</p>
+                                </div>
+                                <div className="relative pl-6">
+                                <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                                <p className="text-xs text-green-600 font-bold">1988-1992</p>
+                                <h4 className="text-sm font-bold text-slate-800">Going International</h4>
+                                <p className="text-xs text-slate-500 mt-1">Entered Taiwan (1988), South Korea (1990), and Thailand (1992).</p>
+                                </div>
                             </div>
-                            <div className="relative pl-6">
-                              <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
-                              <p className="text-xs text-green-600 font-bold">1988-1992</p>
-                              <h4 className="text-sm font-bold text-slate-800">{t("Going International", "ขยายสู่สากล")}</h4>
-                              <p className="text-xs text-slate-500 mt-1">{t("Entered Taiwan (1988), South Korea (1990), and Thailand (1992).", "เข้าสู่ไต้หวัน (1988) เกาหลีใต้ (1990) และไทย (1992)")}</p>
                             </div>
-                          </div>
+
+                            {/* Ting Hsin */}
+                            <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-[#003882]">
+                            <h3 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
+                                <i className="fas fa-industry text-[#003882]"></i> TING HSIN GROUP
+                            </h3>
+                            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                                A Taiwan-based conglomerate that controls massive local supply chains in China. Known for creating the dominant "Master Kong" instant noodle brand in 1992, Ting Hsin possessed the local know-how, real estate connections, and factories required to scale rapidly.
+                            </p>
+                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6 text-sm text-slate-700">
+                                <strong>Strategic Need:</strong> Ting Hsin had massive factories and an aggressive "land grab" mentality to dominate local real estate. However, they lacked the complex algorithms and logistical know-how to run modern convenience stores. They saw C-stores as the perfect distribution channel for their own food products.
+                            </div>
+                            
+                            <h4 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100"><i className="fas fa-clock text-slate-400 mr-2"></i>Timeline</h4>
+                            <div className="relative border-l-2 border-blue-200 ml-3 space-y-6">
+                                <div className="relative pl-6">
+                                <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                                <p className="text-xs text-blue-600 font-bold">1958</p>
+                                <h4 className="text-sm font-bold text-slate-800">Founding</h4>
+                                <p className="text-xs text-slate-500 mt-1">Founded by Dehe Wei as a small castor oil business in Taiwan.</p>
+                                </div>
+                                <div className="relative pl-6">
+                                <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                                <p className="text-xs text-blue-600 font-bold">1992</p>
+                                <h4 className="text-sm font-bold text-slate-800">Master Kong</h4>
+                                <p className="text-xs text-slate-500 mt-1">Launched cheap, tasty instant noodles, dominating the Chinese market.</p>
+                                </div>
+                                <div className="relative pl-6">
+                                <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                                <p className="text-xs text-blue-600 font-bold">1996+</p>
+                                <h4 className="text-sm font-bold text-slate-800">Expansion</h4>
+                                <p className="text-xs text-slate-500 mt-1">Acquired Dicos, partnered with Tesco, and formed a bottling alliance with PepsiCo.</p>
+                                </div>
+                            </div>
+                            </div>
                         </div>
 
-                        {/* Ting Hsin */}
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-[#003882]">
-                          <h3 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
-                            <i className="fas fa-industry text-[#003882]"></i> TING HSIN GROUP
-                          </h3>
-                          <p className="text-sm text-slate-600 leading-relaxed mb-8">
-                            {t("A Taiwan-based conglomerate that controls massive local supply chains in China. Known for creating the dominant 'Master Kong' instant noodle brand in 1992, Ting Hsin possessed the local know-how, real estate connections, and factories required to scale rapidly.",
-                               "กลุ่มทุนจากไต้หวันที่ควบคุมห่วงโซ่อุปทานขนาดใหญ่ในจีน มีชื่อเสียงจากการสร้างแบรนด์บะหมี่ 'Master Kong' ในปี 1992 Ting Hsin มีความรู้ท้องถิ่น เครือข่ายอสังหาฯ และโรงงานที่จำเป็นต่อการขยายตัว")}</p>
-                          <h4 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100"><i className="fas fa-clock text-slate-400 mr-2"></i>{t("Timeline", "ลำดับเหตุการณ์")}</h4>
-                          <div className="relative border-l-2 border-blue-200 ml-3 space-y-6">
-                            <div className="relative pl-6">
-                              <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
-                              <p className="text-xs text-blue-600 font-bold">1958</p>
-                              <h4 className="text-sm font-bold text-slate-800">{t("Founding", "ก่อตั้ง")}</h4>
-                              <p className="text-xs text-slate-500 mt-1">{t("Founded by Dehe Wei as a small castor oil business in Taiwan.", "ก่อตั้งเป็นธุรกิจน้ำมันละหุ่งขนาดเล็กในไต้หวัน")}</p>
+                        {/* JV Theory Block (Gary Hamel) - Moved to bottom */}
+                        <div className="bg-slate-50 border border-slate-200 p-6 md:p-8 rounded-xl shadow-sm mt-8">
+                            <div className="max-w-4xl mx-auto">
+                                <h3 className="text-2xl md:text-3xl font-black text-slate-800 mb-4 flex items-center gap-3">
+                                    <i className="fas fa-book-reader text-indigo-500"></i>
+                                    What is a Joint Venture? The "Race to Learn"
+                                </h3>
+                                <p className="text-slate-700 text-sm md:text-base leading-relaxed mb-6 border-l-4 border-indigo-400 pl-4 font-medium italic">
+                                    "While joint ventures are collaborative on the surface, they are often actually competitive competence-building exercises." <br/>
+                                    <span className="text-xs text-slate-500 font-normal mt-1 block">— Gary Hamel (1991)</span>
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center"><i className="fas fa-puzzle-piece text-indigo-500 mr-2"></i>Mutual Dependency</h4>
+                                        <p className="text-xs text-slate-600 leading-relaxed">JVs are built to solve a specific problem (e.g., needing local market access or operational know-how). Once solved, the core reason for the partnership often disappears.</p>
+                                    </div>
+                                    <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center"><i className="fas fa-eye text-indigo-500 mr-2"></i>Transparency vs. Receptivity</h4>
+                                        <p className="text-xs text-slate-600 leading-relaxed">A firm's learning success depends entirely on how much information its partner reveals (transparency) and how quickly the firm can absorb that information (receptivity).</p>
+                                    </div>
+                                    <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center"><i className="fas fa-trophy text-indigo-500 mr-2"></i>The Ultimate Outcome</h4>
+                                        <p className="text-xs text-slate-600 leading-relaxed">As one partner internalizes the other's core competencies, the "winning" learner may eventually dissolve the JV because they no longer need the partner's resources.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="relative pl-6">
-                              <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
-                              <p className="text-xs text-blue-600 font-bold">1992</p>
-                              <h4 className="text-sm font-bold text-slate-800">{t("Master Kong", "ความสำเร็จของ Master Kong")}</h4>
-                              <p className="text-xs text-slate-500 mt-1">{t("Launched cheap, tasty instant noodles, dominating the Chinese market.", "เปิดตัวบะหมี่กึ่งสำเร็จรูปราคาถูกและอร่อย ครองตลาดจีน")}</p>
-                            </div>
-                            <div className="relative pl-6">
-                              <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
-                              <p className="text-xs text-blue-600 font-bold">1996+</p>
-                              <h4 className="text-sm font-bold text-slate-800">{t("Expansion", "การขยายตัว")}</h4>
-                              <p className="text-xs text-slate-500 mt-1">{t("Acquired Dicos, partnered with Tesco, and formed a bottling alliance with PepsiCo.", "ซื้อกิจการ Dicos จับมือกับ Tesco และเป็นพันธมิตรกับ PepsiCo")}</p>
-                            </div>
-                          </div>
                         </div>
+
                     </div>
                   )}
 
                   {/* --- TAB CONTENT: STRATEGY DISPUTE & MAP --- */}
                   {activeTab === 'strategy' && (
                     <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
-                        <div className="mb-8">
-                            <h3 className="text-2xl font-black text-slate-800 mb-2 flex items-center gap-3"><i className="fas fa-map-marked-alt text-indigo-500"></i> {t("The Geographic Expansion Dispute", "ข้อพิพาทด้านการขยายภูมิภาค")}</h3>
-                            <p className="text-slate-500 text-sm">{t("A visual representation of the core strategic conflict. Hover over the subtle dots to view city data.", "ภาพแสดงความขัดแย้งเชิงกลยุทธ์หลัก วางเมาส์เหนือจุดบนแผนที่เพื่อดูข้อมูลเมือง")}</p>
-                        </div>
                         
-                        {/* Map Container */}
-                        <div 
-                            ref={mapRef}
-                            className="relative w-full max-w-4xl mx-auto bg-slate-50 rounded-xl overflow-hidden shadow-inner border border-slate-200 mb-6 select-none"
-                            onMouseMove={handleDragMove}
-                            onMouseUp={handleDragEnd}
-                            onMouseLeave={handleDragEnd}
-                            onTouchMove={handleDragMove}
-                            onTouchEnd={handleDragEnd}
-                        >
-                            
-                            {/* Map Image replacing CSS background for accurate scaling */}
-                            <img 
-                                src="./china-map.jpg" 
-                                alt="Map of China" 
-                                className="w-full h-auto block"
-                                onError={(e) => {
-                                    e.target.onerror = null; 
-                                    e.target.src = 'https://placehold.co/1000x800/e2e8f0/475569?text=Map+Placeholder';
-                                }}
-                            />
-
-                            {/* Interactive Hover Zones Container */}
-                            <div className="absolute inset-0 w-full h-full">
-                                {interactiveCities.map(city => (
-                                    <div
-                                        key={city.id}
-                                        className={`absolute w-8 h-8 -ml-4 -mt-8 ${draggingCityId === city.id ? 'cursor-grabbing z-50' : 'cursor-grab z-10'} flex items-center justify-center group`}
-                                        style={{ top: city.top, left: city.left }}
-                                        onMouseEnter={() => !draggingCityId && setHoveredCity(city)}
-                                        onMouseLeave={() => !draggingCityId && setHoveredCity(null)}
-                                        onMouseDown={(e) => handleDragStart(e, city.id)}
-                                        onTouchStart={(e) => handleDragStart(e, city.id)}
-                                    >
-                                        {/* Map Marker Icon */}
-                                        <i className={`fas fa-map-marker-alt text-3xl ${themeClasses[city.theme].text} drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] opacity-90 ${draggingCityId === city.id ? 'scale-110 -translate-y-2' : 'group-hover:opacity-100 group-hover:-translate-y-1'} transition-all duration-200`}></i>
-                                    </div>
-                                ))}
-
-                                {/* Tooltip Overlay */}
-                                {hoveredCity && !draggingCityId && (
-                                    <div 
-                                        className="absolute z-30 bg-white/95 p-4 rounded-xl shadow-xl border border-slate-200 pointer-events-none transform -translate-x-1/2 -translate-y-full mt-[-35px] w-56 transition-all duration-200"
-                                        style={{ top: hoveredCity.top, left: hoveredCity.left }}
-                                    >
-                                        <div className={`text-[10px] font-bold ${themeClasses[hoveredCity.theme].badgeText} ${themeClasses[hoveredCity.theme].bg} px-2 py-0.5 rounded inline-block mb-1.5 uppercase tracking-wider`}>
-                                            {hoveredCity.tier}
-                                        </div>
-                                        <h4 className="text-lg font-black text-slate-800 mb-2">{hoveredCity.name}</h4>
-                                        <div className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-2">
-                                            <p className="flex justify-between items-center"><span>Pop (2019):</span> <span className="font-bold text-slate-800">{hoveredCity.pop}</span></p>
-                                            <p className="flex justify-between items-center"><span>GDP (2019):</span> <span className="font-bold text-slate-800">{hoveredCity.gdp}</span></p>
-                                        </div>
-                                        {/* Tooltip Arrow */}
-                                        <div className="absolute w-3 h-3 bg-white border-b border-r border-slate-200 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-[7px]"></div>
-                                    </div>
-                                )}
+                        {/* 1. Three Layers of Conflict */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                            <div className="bg-orange-50 p-6 rounded-xl border border-orange-100">
+                                <h4 className="text-lg font-bold text-orange-900 mb-3"><i className="fas fa-percentage text-orange-500 mr-2"></i>1. Commercial Conflict</h4>
+                                <p className="text-sm text-orange-800 leading-relaxed">
+                                    <strong>The Royalty Dilemma:</strong> Initially, Ting Hsin paid a premium 1% royalty to learn complex Japanese operations. Once mastered, they felt 1% was unjustified, as rivals charged 0.3%. This led to massive disagreements over payment obligations and how the JV's value should be shared.
+                                </p>
                             </div>
 
-                            {/* Map Color Legend - Bottom Right */}
-                            <div className="absolute bottom-4 right-4 bg-white/95 p-3 rounded-xl border border-slate-200 shadow-md z-20">
-                                <h4 className="text-xs font-bold text-slate-800 mb-2 border-b border-slate-100 pb-1">{t("Map Color Code", "ความหมายสีบนแผนที่")}</h4>
-                                <div className="space-y-1.5 text-[10px] text-slate-600 font-medium">
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#1ba13b] border border-slate-300 shadow-sm"></div>{t("Tier 1", "ระดับ 1")}</div>
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#b9e623] border border-slate-300 shadow-sm"></div>{t("New Tier 1", "ระดับ 1 ใหม่")}</div>
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#ffde00] border border-slate-300 shadow-sm"></div>{t("Tier 2", "ระดับ 2")}</div>
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#ffb400] border border-slate-300 shadow-sm"></div>{t("Tier 3", "ระดับ 3")}</div>
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#e5e5e5] border border-slate-300 shadow-sm"></div>{t("Tier 4", "ระดับ 4")}</div>
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 bg-white border border-slate-300 shadow-sm"></div>{t("Tier 5", "ระดับ 5")}</div>
+                            <div className="bg-red-50 p-6 rounded-xl border border-red-100">
+                                <h4 className="text-lg font-bold text-red-900 mb-3"><i className="fas fa-file-invoice-dollar text-red-500 mr-2"></i>2. Governance Conflict</h4>
+                                <p className="text-sm text-red-800 leading-relaxed">
+                                    <strong>The Financial Blackout:</strong> Ting Hsin sourced 40% of products from its own factories. Suspecting hidden profit shifting, FM Japan requested data. In response, Ting Hsin completely stopped sharing financial data, raising massive concerns over related-party transactions and fair governance.
+                                </p>
+                            </div>
+
+                            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                                <h4 className="text-lg font-bold text-slate-800 mb-3"><i className="fas fa-chess text-slate-500 mr-2"></i>3. Strategic Conflict</h4>
+                                <p className="text-sm text-slate-600 leading-relaxed">
+                                    <strong>Control vs. Expansion:</strong> FM Japan wanted to strictly protect its premium brand by focusing only on wealthy Tier 1 cities. Ting Hsin demanded greater autonomy to aggressively expand into Tier 2/3 cities to crush rivals. The partners fundamentally disagreed on the future direction.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* 2. Map Section */}
+                        <div className="border-t border-slate-100 pt-8 mt-8">
+                            <div className="mb-6 text-center">
+                                <h3 className="text-2xl font-black text-slate-800 mb-2 flex items-center justify-center gap-3"><i className="fas fa-map-marked-alt text-indigo-500"></i> Visualizing The Expansion Dispute</h3>
+                                <p className="text-slate-500 text-sm max-w-2xl mx-auto">A visual representation of the core strategic conflict. Hover over the subtle dots to view city data.</p>
+                            </div>
+                            
+                            {/* Map Container */}
+                            <div 
+                                ref={mapRef}
+                                className="relative w-full max-w-4xl mx-auto bg-slate-50 rounded-xl overflow-hidden shadow-inner border border-slate-200 mb-6 select-none"
+                                onMouseMove={handleDragMove}
+                                onMouseUp={handleDragEnd}
+                                onMouseLeave={handleDragEnd}
+                                onTouchMove={handleDragMove}
+                                onTouchEnd={handleDragEnd}
+                            >
+                                
+                                {/* Map Image */}
+                                <img 
+                                    src="./china-map.jpg" 
+                                    alt="Map of China" 
+                                    className="w-full h-auto block"
+                                    onError={(e) => {
+                                        e.target.onerror = null; 
+                                        e.target.src = 'https://placehold.co/1000x800/e2e8f0/475569?text=Map+Placeholder';
+                                    }}
+                                />
+
+                                {/* Interactive Hover Zones */}
+                                <div className="absolute inset-0 w-full h-full">
+                                    {interactiveCities.map(city => (
+                                        <div
+                                            key={city.id}
+                                            className={`absolute w-8 h-8 -ml-4 -mt-8 ${draggingCityId === city.id ? 'cursor-grabbing z-50' : 'cursor-grab z-10'} flex items-center justify-center group`}
+                                            style={{ top: city.top, left: city.left }}
+                                            onMouseEnter={() => !draggingCityId && setHoveredCity(city)}
+                                            onMouseLeave={() => !draggingCityId && setHoveredCity(null)}
+                                            onMouseDown={(e) => handleDragStart(e, city.id)}
+                                            onTouchStart={(e) => handleDragStart(e, city.id)}
+                                        >
+                                            <i className={`fas fa-map-marker-alt text-3xl ${themeClasses[city.theme].text} drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] opacity-90 ${draggingCityId === city.id ? 'scale-110 -translate-y-2' : 'group-hover:opacity-100 group-hover:-translate-y-1'} transition-all duration-200`}></i>
+                                        </div>
+                                    ))}
+
+                                    {/* Tooltip Overlay */}
+                                    {hoveredCity && !draggingCityId && (
+                                        <div 
+                                            className="absolute z-30 bg-white/95 p-4 rounded-xl shadow-xl border border-slate-200 pointer-events-none transform -translate-x-1/2 -translate-y-full mt-[-35px] w-56 transition-all duration-200"
+                                            style={{ top: hoveredCity.top, left: hoveredCity.left }}
+                                        >
+                                            <div className={`text-[10px] font-bold ${themeClasses[hoveredCity.theme].badgeText} ${themeClasses[hoveredCity.theme].bg} px-2 py-0.5 rounded inline-block mb-1.5 uppercase tracking-wider`}>
+                                                {hoveredCity.tier}
+                                            </div>
+                                            <h4 className="text-lg font-black text-slate-800 mb-2">{hoveredCity.name}</h4>
+                                            <div className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-2">
+                                                <p className="flex justify-between items-center"><span>Pop (2019):</span> <span className="font-bold text-slate-800">{hoveredCity.pop}</span></p>
+                                                <p className="flex justify-between items-center"><span>GDP (2019):</span> <span className="font-bold text-slate-800">{hoveredCity.gdp}</span></p>
+                                            </div>
+                                            <div className="absolute w-3 h-3 bg-white border-b border-r border-slate-200 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-[7px]"></div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Map Color Legend */}
+                                <div className="absolute bottom-4 right-4 bg-white/95 p-3 rounded-xl border border-slate-200 shadow-md z-20">
+                                    <h4 className="text-xs font-bold text-slate-800 mb-2 border-b border-slate-100 pb-1">Map Color Code</h4>
+                                    <div className="space-y-1.5 text-[10px] text-slate-600 font-medium">
+                                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#1ba13b] border border-slate-300 shadow-sm"></div>Tier 1</div>
+                                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#b9e623] border border-slate-300 shadow-sm"></div>New Tier 1</div>
+                                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#ffde00] border border-slate-300 shadow-sm"></div>Tier 2</div>
+                                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#ffb400] border border-slate-300 shadow-sm"></div>Tier 3</div>
+                                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#e5e5e5] border border-slate-300 shadow-sm"></div>Tier 4</div>
+                                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-white border border-slate-300 shadow-sm"></div>Tier 5</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Drag Data Output (For configuration) */}
-                        <details className="bg-slate-800 rounded-xl shadow-inner text-green-400 font-mono text-xs mb-10 border border-slate-700">
-                            <summary className="p-3 cursor-pointer flex justify-between items-center font-bold text-slate-300 hover:text-white transition-colors select-none">
-                                <span>📍 Live Pin Config (Click to Expand)</span>
-                                {draggingCityId && <span className="text-yellow-400 animate-pulse font-normal">Dragging...</span>}
-                            </summary>
-                            <div className="p-4 pt-0 overflow-auto max-h-48 border-t border-slate-700">
-                                <pre className="mt-2">{interactiveCities.map(c => `{ id: '${c.id}', top: '${c.top}', left: '${c.left}' }`).join(',\n')}</pre>
-                            </div>
-                        </details>
+                        {/* 3. Asymmetric Learning Table - Moved to Bottom */}
+                        <div className="mt-12 bg-slate-50 p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm">
+                             <h4 className="text-xl font-black text-slate-800 mb-3 flex items-center"><i className="fas fa-graduation-cap text-indigo-500 mr-3"></i>Asymmetric Learning in Action</h4>
+                             <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                                Over 20 years, Ting Hsin successfully internalized FamilyMart's core competencies (C-store management). As this mutual dependency eroded, Ting Hsin ultimately won the "Race to Learn".
+                             </p>
+                             <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-slate-200">
+                                <table className="w-full text-sm text-left">
+                                    <thead className="bg-slate-100 text-slate-800 border-b border-slate-200">
+                                        <tr>
+                                            <th className="px-4 py-3 font-bold">Feature / Capability</th>
+                                            <th className="px-4 py-3 font-bold border-l border-slate-200">FamilyMart Japan</th>
+                                            <th className="px-4 py-3 font-bold border-l border-slate-200">Ting Hsin</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        <tr><td className="px-4 py-3 font-medium text-slate-700">FamilyMart Brand</td><td className="px-4 py-3 text-green-600 font-bold border-l border-slate-100">X (Initial)</td><td className="px-4 py-3 text-slate-300 border-l border-slate-100">-</td></tr>
+                                        <tr><td className="px-4 py-3 font-medium text-slate-700">C-Store Management</td><td className="px-4 py-3 text-green-600 font-bold border-l border-slate-100">X (Initial)</td><td className="px-4 py-3 text-blue-600 font-bold bg-blue-50 border-l border-slate-100">X (Developed Expertise)</td></tr>
+                                        <tr><td className="px-4 py-3 font-medium text-slate-700">Chinese Product R&D</td><td className="px-4 py-3 text-green-600 font-bold border-l border-slate-100">X (Initial)</td><td className="px-4 py-3 text-blue-600 font-bold bg-blue-50 border-l border-slate-100">X (Developed Expertise)</td></tr>
+                                        <tr><td className="px-4 py-3 font-medium text-slate-700">Supply Chain / Logistics</td><td className="px-4 py-3 text-slate-300 border-l border-slate-100">-</td><td className="px-4 py-3 text-blue-600 font-bold border-l border-slate-100">X (Initial)</td></tr>
+                                        <tr><td className="px-4 py-3 font-medium text-slate-700">Food Production Line</td><td className="px-4 py-3 text-slate-300 border-l border-slate-100">-</td><td className="px-4 py-3 text-blue-600 font-bold border-l border-slate-100">X (Initial)</td></tr>
+                                    </tbody>
+                                </table>
+                             </div>
+                             <p className="text-sm text-indigo-700 mt-5 font-bold border-l-4 border-indigo-500 pl-3">Conclusion: With FMJ offering no additional unique value, the 1% royalty fee became an unjustifiable burden for Ting Hsin.</p>
+                        </div>
 
-                        {/* Analysis Text Below Map */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                                <h4 className="text-lg font-bold text-slate-800 mb-3"><i className="fas fa-city text-slate-400 mr-2"></i>{t("City Tiers Explained", "อธิบายระดับเมือง")}</h4>
-                                <p className="text-sm text-slate-600 leading-relaxed mb-3"><strong>{t("Tier 1 Focus:", "จุดเน้นเมืองระดับ 1:")}</strong> {t("FamilyMart Japan wanted to exclusively operate in wealthy megacities (Shanghai, Beijing) where consumers pay premiums for quality fresh food.", "FamilyMart Japan ต้องการดำเนินธุรกิจเฉพาะในมหานครที่มั่งคั่ง (เซี่ยงไฮ้, ปักกิ่ง) ซึ่งผู้บริโภคยอมจ่ายเพื่อคุณภาพอาหารสด")}</p>
-                                <p className="text-sm text-slate-600 leading-relaxed"><strong>{t("Tier 2/3 Conflict:", "ความขัดแย้งเมืองระดับ 2/3:")}</strong> {t("Ting Hsin wanted to aggressively expand inland to capture market share, but FamilyMart Japan blocked this move, causing major strategic friction.", "Ting Hsin ต้องการขยายสาขาเชิงรุกสู่ตอนในของประเทศเพื่อชิงส่วนแบ่งตลาด แต่ถูก FamilyMart Japan ขัดขวาง จนเกิดความขัดแย้งเชิงกลยุทธ์ครั้งใหญ่")}</p>
-                            </div>
-                            <div className="bg-red-50 p-6 rounded-xl border border-red-100">
-                                <h4 className="text-lg font-bold text-red-900 mb-3"><i className="fas fa-file-invoice-dollar text-red-500 mr-2"></i>{t("The Financial Blackout", "การปกปิดข้อมูลทางการเงิน")}</h4>
-                                <p className="text-sm text-red-800 leading-relaxed">
-                                    {t("The ultimate trust-breaker. Ting Hsin sourced 40% of products from its own factories. When FM Japan requested financial data to check for hidden profit shifting (artificially inflated costs), Ting Hsin completely stopped sharing data in 2012.", 
-                                       "จุดแตกหักสำคัญ Ting Hsin จัดหาสินค้า 40% จากโรงงานตัวเอง เมื่อ FM Japan ขอข้อมูลการเงินเพื่อเช็คการซ่อนกำไร Ting Hsin ก็หยุดแชร์ข้อมูลโดยสิ้นเชิงในปี 2012")}
+                    </div>
+                  )}
+
+                  {/* --- TAB CONTENT: LEGAL BATTLE --- */}
+                  {activeTab === 'legal' && (
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
+                        <div className="mb-8 border-b border-slate-100 pb-8">
+                            <h3 className="text-3xl font-black text-slate-800 mb-2 flex items-center gap-3">
+                                <i className="fas fa-gavel text-red-600"></i> The Legal Battle & Court Judgement
+                            </h3>
+                            <p className="text-slate-500 font-medium italic">FamilyMart China Holding Co Ltd (Respondent) v Ting Chuan (Cayman Islands) Holding Corporation (Appellant)</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                            {/* FMJ Claims */}
+                            <div className="bg-red-50 rounded-xl p-6 border border-red-200 shadow-sm relative overflow-hidden">
+                                <div className="absolute -right-4 -top-4 opacity-10 text-red-500"><i className="fas fa-bullhorn text-8xl"></i></div>
+                                <h4 className="text-xl font-black text-red-900 mb-5 relative z-10">FamilyMart Japan's Claims</h4>
+                                <p className="text-sm text-red-800 mb-6 relative z-10">
+                                    FamilyMart stated they could no longer trust their partner and filed a lawsuit in the Cayman Islands to request compulsory dissolution (winding-up) of the Joint Venture. Their primary accusations were:
                                 </p>
+                                <ul className="space-y-4 relative z-10">
+                                    <li className="bg-white p-4 rounded-lg shadow-sm border border-red-100">
+                                        <h5 className="font-bold text-slate-800 flex items-center gap-2"><i className="fas fa-money-bill-wave text-red-500"></i> Hiding the Money</h5>
+                                        <p className="text-sm text-slate-600 mt-1">FMJ alleged Ting Hsin was diverting the convenience stores' profits to their own side businesses, such as their proprietary food factories and delivery networks.</p>
+                                    </li>
+                                    <li className="bg-white p-4 rounded-lg shadow-sm border border-red-100">
+                                        <h5 className="font-bold text-slate-800 flex items-center gap-2"><i className="fas fa-user-secret text-red-500"></i> Keeping Secrets</h5>
+                                        <p className="text-sm text-slate-600 mt-1">FMJ alleged Ting Hsin was intentionally refusing to disclose vital financial papers and related-party transaction details about how the business was being run.</p>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {/* Ting Hsin Defense */}
+                            <div className="bg-blue-50 rounded-xl p-6 border border-blue-200 shadow-sm relative overflow-hidden">
+                                <div className="absolute -right-4 -top-4 opacity-10 text-blue-500"><i className="fas fa-shield-alt text-8xl"></i></div>
+                                <h4 className="text-xl font-black text-blue-900 mb-5 relative z-10">Ting Hsin's Defense</h4>
+                                <p className="text-sm text-blue-800 mb-6 relative z-10">
+                                    Ting Hsin vigorously denied the allegations of profit diversion. Instead of fighting the facts in a public court, they focused on the legality of the venue itself:
+                                </p>
+                                <ul className="space-y-4 relative z-10">
+                                    <li className="bg-white p-4 rounded-lg shadow-sm border border-blue-100">
+                                        <h5 className="font-bold text-slate-800 flex items-center gap-2"><i className="fas fa-file-contract text-blue-500"></i> The Shareholders' Agreement</h5>
+                                        <p className="text-sm text-slate-600 mt-1">Ting Hsin argued that per the original contractual agreement between the partners, any dispute of this nature must be settled privately through arbitration, not through a public court dissolution process.</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* Privy Council Ruling */}
+                        <div className="bg-slate-800 text-white rounded-xl p-8 shadow-lg relative">
+                            <div className="absolute top-0 left-0 w-2 h-full bg-yellow-500 rounded-l-xl"></div>
+                            <h4 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
+                                <i className="fas fa-landmark text-yellow-500"></i> The Decision: 2023 UK Privy Council Ruling
+                            </h4>
+                            <p className="text-slate-400 text-sm font-mono mb-6">[2023] UKPC 33</p>
+                            
+                            <p className="text-slate-300 text-lg leading-relaxed mb-6">
+                                In a landmark judgement on appeal from the Court of Appeal of the Cayman Islands, the Privy Council delivered a crucial ruling that altered the course of the dispute:
+                            </p>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="bg-slate-700/50 p-5 rounded-lg border border-slate-600">
+                                    <h5 className="font-bold text-yellow-400 mb-2">1. The "Trial of Facts"</h5>
+                                    <p className="text-sm text-slate-300">The court ruled that the factual disputes (such as whether Ting Hsin was actually hiding money or diverting profits) must first be investigated and decided in private arbitration.</p>
+                                </div>
+                                <div className="bg-slate-700/50 p-5 rounded-lg border border-slate-600">
+                                    <h5 className="font-bold text-yellow-400 mb-2">2. The Court's Role</h5>
+                                    <p className="text-sm text-slate-300">While only a court has the ultimate power to legally dissolve (wind up) a company, it will not do so until an arbitrator confirms a breach of trust occurred. If confirmed, FMJ could then return to court for a final remedy like a forced buy-out.</p>
+                                </div>
+                            </div>
+                            <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-200 text-sm font-medium text-center">
+                                Result: This ruling stalled FamilyMart's attempt for a quick legal dissolution and forced both parties into a prolonged, private arbitration process—eventually paving the way for their out-of-court settlement in 2024.
+                            </div>
+                        </div>
+                    </div>
+                  )}
+
+                  {/* --- TAB CONTENT: NEGOTIATION (BATNA) --- */}
+                  {activeTab === 'negotiation' && (
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
+                        {/* BATNA Explanation */}
+                        <div className="mb-10 pb-8 border-b border-slate-100">
+                            <h3 className="text-3xl font-black text-slate-800 mb-4 flex items-center gap-3">
+                                <i className="fas fa-handshake-angle text-indigo-500"></i>
+                                What is BATNA?
+                            </h3>
+                            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                                <p className="text-slate-700 leading-relaxed mb-6 text-lg">
+                                    <strong>BATNA</strong> = <span className="text-indigo-600 font-bold">B</span>est <span className="text-indigo-600 font-bold">A</span>lternative <span className="text-indigo-600 font-bold">T</span>o a <span className="text-indigo-600 font-bold">N</span>egotiated <span className="text-indigo-600 font-bold">A</span>greement (Roger Fisher). <br/>
+                                    <span className="text-sm mt-2 block">It represents the most advantageous course of action a party can take if negotiations fail and an agreement cannot be reached (essentially, your "Plan B").</span>
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                                    <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex items-start gap-4">
+                                        <div className="bg-green-100 p-3 rounded-full text-green-600 shrink-0"><i className="fas fa-shield-alt text-xl"></i></div>
+                                        <div>
+                                            <h4 className="font-bold text-slate-800 mb-1 text-base">Prevents Bad Deals</h4>
+                                            <p className="text-slate-600 leading-relaxed">It provides a strict rejection point. If the current offer on the table is worse than your BATNA, you should walk away.</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex items-start gap-4">
+                                        <div className="bg-orange-100 p-3 rounded-full text-orange-600 shrink-0"><i className="fas fa-eye text-xl"></i></div>
+                                        <div>
+                                            <h4 className="font-bold text-slate-800 mb-1 text-base">Avoids Over-Optimism</h4>
+                                            <p className="text-slate-600 leading-relaxed">It forces negotiators to look at the harsh reality of what actually happens if the deal completely falls through.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* BATNA Analysis Grids */}
+                        <div>
+                            <h3 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                                <i className="fas fa-balance-scale-left text-slate-400"></i>
+                                Analyzing the Partners' BATNAs (2019)
+                            </h3>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                {/* FMJ BATNA */}
+                                <div className="bg-green-50 rounded-xl p-6 md:p-8 border border-green-200 shadow-sm">
+                                    <h4 className="text-xl font-black text-green-800 mb-6 flex items-center gap-2"><i className="fas fa-store"></i> FamilyMart's Alternatives</h4>
+                                    <div className="space-y-4">
+                                        <div className="bg-white p-5 rounded-lg shadow-sm border border-green-100 hover:shadow-md transition-shadow">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <h5 className="font-bold text-slate-800 text-lg">1. Legal Battle (Force Buyout)</h5>
+                                                <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-1 rounded uppercase tracking-wider whitespace-nowrap">High Risk / Tedious</span>
+                                            </div>
+                                            <p className="text-sm text-slate-600 leading-relaxed">Continue Cayman Islands lawsuit aiming for court-ordered winding-up to force Ting Hsin to sell its 59.65% stake.</p>
+                                        </div>
+                                        <div className="bg-white p-5 rounded-lg shadow-sm border border-green-100 hover:shadow-md transition-shadow">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <h5 className="font-bold text-slate-800 text-lg">2. Brand Landlord (Sell to Ting Hsin)</h5>
+                                                <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-1 rounded uppercase tracking-wider whitespace-nowrap">Low Risk / Short</span>
+                                            </div>
+                                            <p className="text-sm text-slate-600 leading-relaxed">Sell 40.35% stake (possibly at discount). Retain IP rights and generate revenue solely from brand licensing.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Ting Hsin BATNA */}
+                                <div className="bg-blue-50 rounded-xl p-6 md:p-8 border border-blue-200 shadow-sm">
+                                    <h4 className="text-xl font-black text-blue-800 mb-6 flex items-center gap-2"><i className="fas fa-industry"></i> Ting Hsin's Alternatives</h4>
+                                    <div className="space-y-4">
+                                        <div className="bg-white p-5 rounded-lg shadow-sm border border-blue-100 hover:shadow-md transition-shadow">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <h5 className="font-bold text-slate-800 text-lg">1. Weathering the Storm (Waiting Game)</h5>
+                                                <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-1 rounded uppercase tracking-wider whitespace-nowrap">Low Risk / Tedious</span>
+                                            </div>
+                                            <p className="text-sm text-slate-600 leading-relaxed">FMJ bleeds legal fees while Ting Hsin keeps JV revenue. Time is an ally. Use attrition to force a favorable settlement.</p>
+                                        </div>
+                                        <div className="bg-white p-5 rounded-lg shadow-sm border border-blue-100 hover:shadow-md transition-shadow">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <h5 className="font-bold text-slate-800 text-lg">2. The "Cash-Out" (Sell to FMJ)</h5>
+                                                <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-1 rounded uppercase tracking-wider whitespace-nowrap">High Risk / Long</span>
+                                            </div>
+                                            <p className="text-sm text-slate-600 leading-relaxed">Sell 59.65% stake at a massive premium. Use cash to launch a new 100% owned franchise network with 0% royalty.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -661,45 +830,45 @@
                   {activeTab === 'dispute' && (
                     <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
                         <h3 className="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-3">
-                          <i className="fas fa-balance-scale text-red-500"></i>
-                          {t("The Legal Timeline", "ลำดับเหตุการณ์คดีความ")}
+                          <i className="fas fa-stream text-indigo-500"></i>
+                          The Dispute Timeline
                         </h3>
                         <div className="relative border-l-2 border-slate-200 ml-4 space-y-8">
                             <div className="relative pl-6">
                               <div className="absolute w-4 h-4 bg-slate-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                              <p className="text-sm text-slate-500 font-bold mb-1">{t("Oct 2018", "ตุลาคม 2018")}</p>
-                              <h4 className="text-lg font-bold text-slate-800">{t("FamilyMart Sues in Cayman Islands", "FamilyMart ฟ้องศาลหมู่เกาะเคย์แมน")}</h4>
-                              <p className="text-sm text-slate-600 mt-1">{t("Requests compulsory dissolution of the JV due to unpaid royalties and hidden financial data.", "ขอบังคับยุติการร่วมทุนเนื่องจากไม่จ่ายค่าลิขสิทธิ์และปกปิดข้อมูลการเงิน")}</p>
+                              <p className="text-sm text-slate-500 font-bold mb-1">Oct 2018</p>
+                              <h4 className="text-lg font-bold text-slate-800">FamilyMart Sues in Cayman Islands</h4>
+                              <p className="text-sm text-slate-600 mt-1">Requests compulsory dissolution of the JV due to unpaid royalties and hidden financial data.</p>
                             </div>
                             <div className="relative pl-6">
                               <div className="absolute w-4 h-4 bg-slate-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                              <p className="text-sm text-slate-500 font-bold mb-1">{t("Feb 2019", "กุมภาพันธ์ 2019")}</p>
-                              <h4 className="text-lg font-bold text-slate-800">{t("Arbitration Ordered", "ศาลสั่งให้อนุญาโตตุลาการชี้ขาด")}</h4>
-                              <p className="text-sm text-slate-600 mt-1">{t("Court suspends hearing, ordering dispute to go through arbitration per JV agreement.", "ศาลระงับการพิจารณาคดี สั่งให้ข้อพิพาทผ่านอนุญาโตตุลาการตามข้อตกลง")}</p>
+                              <p className="text-sm text-slate-500 font-bold mb-1">Feb 2019</p>
+                              <h4 className="text-lg font-bold text-slate-800">Arbitration Ordered</h4>
+                              <p className="text-sm text-slate-600 mt-1">Court suspends hearing, ordering dispute to go through arbitration per JV agreement.</p>
                             </div>
                             <div className="relative pl-6">
                               <div className="absolute w-4 h-4 bg-slate-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                              <p className="text-sm text-slate-500 font-bold mb-1">{t("Mar 2019", "มีนาคม 2019")}</p>
-                              <h4 className="text-lg font-bold text-slate-800">{t("FamilyMart Appeals", "FamilyMart ยื่นอุทธรณ์คัดค้าน")}</h4>
-                              <p className="text-sm text-slate-600 mt-1">{t("Refusing to accept the arbitration mandate, FamilyMart Japan appeals the court's decision, insisting on direct legal dissolution.", "ด้วยความปฏิเสธที่จะยอมรับคำสั่งของอนุญาโตตุลาการ FamilyMart Japan จึงได้ดำเนินการอุทธรณ์คำตัดสินของศาล โดยยืนกรานที่จะขอให้ศาลมีคำสั่งยุติการร่วมทุนทางกฎหมายโดยตรง")}</p>
+                              <p className="text-sm text-slate-500 font-bold mb-1">Mar 2019</p>
+                              <h4 className="text-lg font-bold text-slate-800">FamilyMart Appeals</h4>
+                              <p className="text-sm text-slate-600 mt-1">Refusing to accept the arbitration mandate, FamilyMart Japan appeals the court's decision, insisting on direct legal dissolution.</p>
                             </div>
                             <div className="relative pl-6">
                               <div className="absolute w-4 h-4 bg-red-500 rounded-full -left-[9px] top-1 border-2 border-white shadow-[0_0_0_2px_rgba(239,68,68,0.2)]"></div>
-                              <p className="text-sm text-red-500 font-bold mb-1">{t("May 2019", "พฤษภาคม 2019")}</p>
-                              <h4 className="text-lg font-bold text-slate-800">{t("The Public Feud", "ความขัดแย้งลุกลามสู่สาธารณะ")}</h4>
-                              <p className="text-sm text-slate-600 mt-1">{t("Lawsuit leaks to press. Bitter public war of words via formal statements begins.", "คดีรั่วไหลสู่สื่อ เกิดสงครามน้ำลายผ่านแถลงการณ์สาธารณะอย่างดุเดือด")}</p>
+                              <p className="text-sm text-red-500 font-bold mb-1">May 2019</p>
+                              <h4 className="text-lg font-bold text-slate-800">The Public Feud</h4>
+                              <p className="text-sm text-slate-600 mt-1">Lawsuit leaks to press. Bitter public war of words via formal statements begins.</p>
                             </div>
                             <div className="relative pl-6">
                               <div className="absolute w-4 h-4 bg-slate-400 rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                              <p className="text-sm text-slate-500 font-bold mb-1">{t("Sep 2023", "กันยายน 2023")}</p>
-                              <h4 className="text-lg font-bold text-slate-800">{t("UK Privy Council Ruling", "คำตัดสินของคณะองคมนตรีสหราชอาณาจักร")}</h4>
-                              <p className="text-sm text-slate-600 mt-1">{t("Landmark ruling affirms factual disputes (loss of trust) must be arbitrated first.", "คำตัดสินครั้งประวัติศาสตร์ยืนยันว่าข้อพิพาท (การสูญเสียความไว้ใจ) ต้องผ่านอนุญาโตตุลาการก่อน")}</p>
+                              <p className="text-sm text-slate-500 font-bold mb-1">Sep 2023</p>
+                              <h4 className="text-lg font-bold text-slate-800">UK Privy Council Ruling</h4>
+                              <p className="text-sm text-slate-600 mt-1">Ruling [2023] UKPC 33 affirms factual disputes (e.g., FMJ's claims of Ting Hsin hiding profits in affiliate businesses) must be arbitrated first before any court-ordered dissolution.</p>
                             </div>
                             <div className="relative pl-6">
                               <div className="absolute w-4 h-4 bg-[#00A54F] rounded-full -left-[9px] top-1 border-2 border-white"></div>
-                              <p className="text-sm text-green-600 font-bold mb-1">{t("Mar 2024", "มีนาคม 2024")}</p>
-                              <h4 className="text-lg font-bold text-slate-800">{t("Restructuring Agreement", "บรรลุข้อตกลงปรับโครงสร้าง")}</h4>
-                              <p className="text-sm text-slate-600 mt-1">{t("Out-of-court settlement divides regional operations, ending the deadlock.", "ข้อตกลงยอมความนอกศาลเพื่อแบ่งพื้นที่บริหาร ยุติทางตันของธุรกิจ")}</p>
+                              <p className="text-sm text-green-600 font-bold mb-1">Mar 2024</p>
+                              <h4 className="text-lg font-bold text-slate-800">Restructuring Agreement</h4>
+                              <p className="text-sm text-slate-600 mt-1">Out-of-court settlement restructures ownership and ends the deadlock with a buyout.</p>
                             </div>
                         </div>
                     </div>
@@ -710,96 +879,55 @@
                     <div className="bg-white p-8 md:p-12 rounded-xl shadow-sm border border-slate-100 animate-in fade-in duration-300">
                         <div className="max-w-3xl mx-auto text-center mb-10">
                             <div className="inline-block bg-blue-50 p-4 rounded-full mb-4 text-blue-500 text-4xl"><i className="fas fa-handshake"></i></div>
-                            <h3 className="text-3xl font-black text-slate-800 mb-4">{t("The 2024 Resolution", "บทสรุปข้อตกลงปี 2024")}</h3>
-                            <p className="text-slate-600 text-lg">{t("After years of costly legal battles, the partners reached a pragmatic out-of-court settlement, successfully restructuring the alliance to save the brand.", "หลังจากสู้คดีด้วยค่าใช้จ่ายมหาศาล พันธมิตรยอมความนอกศาล ปรับโครงสร้างเพื่อรักษาแบรนด์ไว้")}</p>
+                            <h3 className="text-3xl font-black text-slate-800 mb-4">The 2024 Resolution</h3>
+                            <p className="text-slate-600 text-lg">After years of costly legal battles, the partners reached a pragmatic out-of-court settlement, successfully restructuring the alliance to save the brand.</p>
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                             <div className="bg-slate-50 border border-slate-200 p-8 rounded-xl border-t-4 border-t-[#003882]">
-                                <h4 className="text-xl font-bold text-[#003882] mb-4 flex items-center gap-2"><i className="fas fa-map-marker-alt"></i> {t("Ting Hsin's Territory", "เขตอำนาจของ Ting Hsin")}</h4>
+                                <h4 className="text-xl font-bold text-[#003882] mb-4 flex items-center gap-2"><i className="fas fa-building"></i> Ting Hsin's Ownership</h4>
                                 <ul className="space-y-3 text-sm text-slate-700">
-                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> {t("Retains an 80% stake in the lucrative East China operations.", "ถือหุ้น 80% ในกิจการภาคตะวันออกที่ทำกำไรสูง")}</li>
-                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> {t("Continues to manage 2,100+ stores in Shanghai, Suzhou, and Hangzhou.", "บริหารร้านค้ากว่า 2,100 แห่งในเซี่ยงไฮ้ ซูโจว และหางโจวต่อไป")}</li>
+                                    <li className="flex items-start"><i className="fas fa-check text-blue-500 mt-1 mr-2 shrink-0"></i> Retains an 80% majority stake in the lucrative Yangtze River Delta (YRC / East China) operations.</li>
+                                    <li className="flex items-start"><i className="fas fa-check text-blue-500 mt-1 mr-2 shrink-0"></i> Takes 100% full ownership of all FamilyMart operations in other parts of China (South, North, Southwest).</li>
                                 </ul>
                             </div>
                             <div className="bg-slate-50 border border-slate-200 p-8 rounded-xl border-t-4 border-t-[#00A54F]">
-                                <h4 className="text-xl font-bold text-[#00A54F] mb-4 flex items-center gap-2"><i className="fas fa-store"></i> {t("FamilyMart Japan's Territory", "เขตอำนาจของ FM Japan")}</h4>
+                                <h4 className="text-xl font-bold text-[#00A54F] mb-4 flex items-center gap-2"><i className="fas fa-money-bill-wave"></i> FamilyMart Japan's Settlement</h4>
                                 <ul className="space-y-3 text-sm text-slate-700">
-                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> {t("Takes over direct management of South, North, and Southwest China.", "รับช่วงบริหารงานโดยตรงในจีนตอนใต้ ตอนเหนือ และตะวันตกเฉียงใต้")}</li>
-                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> {t("Gains autonomy to implement new digital value chain strategies without friction.", "ได้อิสระในการใช้กลยุทธ์ค้าปลีกดิจิทัลใหม่ๆ โดยไม่มีข้อขัดแย้ง")}</li>
+                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> Retains a 20% minority stake exclusively in the Yangtze River Delta (YRC) joint venture.</li>
+                                    <li className="flex items-start"><i className="fas fa-check text-green-500 mt-1 mr-2 shrink-0"></i> Receives a massive buyout payment of approximately $210 million USD (31.6 billion yen) for relinquishing the rest of the China business.</li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-xl text-center">
-                            <h4 className="font-bold text-indigo-900 mb-2">{t("The Strategic Win-Win", "ผลลัพธ์แบบวิน-วิน")}</h4>
-                            <p className="text-sm text-indigo-800">
-                                {t("Ting Hsin kept its highly profitable Shanghai network. FM Japan avoided the catastrophic loss of its brand, ended the deadlock, and recorded a 31.6 billion yen gain from the restructuring.", 
-                                   "Ting Hsin รักษาเครือข่ายเซี่ยงไฮ้ที่ทำกำไรมหาศาลไว้ได้ FM Japan หลีกเลี่ยงการสูญเสียแบรนด์ ยุติทางตัน และบันทึกกำไร 3.16 หมื่นล้านเยนจากการปรับโครงสร้าง")}
+                        <div className="bg-orange-50 border border-orange-200 p-6 rounded-xl text-center mb-10 shadow-sm">
+                            <h4 className="text-xl font-black text-orange-900 mb-3 flex items-center justify-center gap-2"><i className="fas fa-lemon text-orange-500"></i> A Bittersweet Ending (JV in Name Only)</h4>
+                            <p className="text-sm text-orange-800 leading-relaxed max-w-4xl mx-auto">
+                                Ting Hsin undeniably won the 'Race to Learn'. They secured full control over the vast inland expansion and maintained an 80% dominant grip on East China. While FamilyMart Japan successfully exited a broken, deadlocked partnership with a lucrative $210M cash injection, their remaining 20% foothold leaves them with effectively zero operational control. The surviving entity is a Joint Venture in name only.
                             </p>
                         </div>
-                    </div>
-                  )}
 
-                  {/* --- TAB CONTENT: PRESENTATION GUIDE --- */}
-                  {activeTab === 'presentation' && (
-                    <div className="space-y-6 animate-in fade-in duration-300">
-                        <div className="bg-slate-800 p-8 rounded-xl text-white text-center shadow-lg">
-                            <h2 className="text-3xl font-black mb-2">{t("Presentation Structure", "โครงสร้างการนำเสนอ")}</h2>
-                            <p className="text-slate-300">{t("A 3-speaker narrative framework covering the setup, the conflict, and the academic analysis.", "โครงสร้าง 3 ผู้พูดครอบคลุมตั้งแต่ภูมิหลัง ความขัดแย้ง และบทวิเคราะห์เชิงวิชาการ")}</p>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            {/* Speaker 1 */}
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-[#00A54F]">
-                                <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{t("Speaker 1", "ผู้พูดที่ 1")}</div>
-                                <h3 className="text-xl font-bold text-slate-800 mb-4">{t("The Foundation", "ภูมิหลังและการก่อตั้ง")}</h3>
-                                <div className="space-y-4">
-                                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                        <h4 className="text-xs font-bold text-slate-700 mb-1">{t("Objective:", "เป้าหมาย:")}</h4>
-                                        <p className="text-xs text-slate-600">{t("Introduce the two giants and explain WHY they partnered using the Build-Borrow-Buy framework.", "แนะนำสองบริษัทยักษ์ใหญ่และอธิบายเหตุผลการร่วมมือโดยใช้เฟรมเวิร์ก Build-Borrow-Buy")}</p>
-                                    </div>
-                                    <ul className="text-sm text-slate-700 space-y-2 list-disc pl-4">
-                                        <li><strong>FM Japan:</strong> Premium quality, exact operations, but lacked local China network.</li>
-                                        <li><strong>Ting Hsin:</strong> 'Master Kong' creators. Deep local supply chains and Guanxi.</li>
-                                        <li><strong>Build-Borrow-Buy:</strong> Internal resources low. Tradability of complex know-how low. Need for closeness high. <em>Result: Equity Alliance (JV).</em></li>
-                                        <li><strong>Success:</strong> Reached 2,800+ stores. #1 foreign brand.</li>
-                                    </ul>
+                        {/* Key Takeaways from the Case */}
+                        <div className="border-t border-slate-200 pt-10">
+                            <h3 className="text-2xl font-black text-slate-800 mb-8 flex items-center justify-center gap-3 tracking-tight">
+                                <i className="fas fa-lightbulb text-yellow-500"></i>
+                                Key Takeaways for Global Partnerships
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mb-5 text-xl border border-indigo-100"><i className="fas fa-sync-alt"></i></div>
+                                    <h4 className="font-bold text-slate-800 mb-3 text-lg">Value Must Evolve</h4>
+                                    <p className="text-sm text-slate-600 leading-relaxed">Your value as a foreign partner must evolve. To stay relevant and justify royalties over time, you must control a dynamic asset (like global R&D or an exclusive digital platform) that the local partner cannot easily copy.</p>
                                 </div>
-                            </div>
-
-                            {/* Speaker 2 */}
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-red-500">
-                                <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{t("Speaker 2", "ผู้พูดที่ 2")}</div>
-                                <h3 className="text-xl font-bold text-slate-800 mb-4">{t("The Conflict", "ความขัดแย้ง & คดีความ")}</h3>
-                                <div className="space-y-4">
-                                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                        <h4 className="text-xs font-bold text-slate-700 mb-1">{t("Objective:", "เป้าหมาย:")}</h4>
-                                        <p className="text-xs text-slate-600">{t("Detail the strategic disputes, the financial data blackout, and the bitter lawsuit.", "ให้รายละเอียดข้อพิพาทกลยุทธ์ การปกปิดข้อมูลเงิน และคดีความ")}</p>
-                                    </div>
-                                    <ul className="text-sm text-slate-700 space-y-2 list-disc pl-4">
-                                        <li><strong>Geography:</strong> FM Japan refused to expand beyond Tier 1. Ting Hsin desperately wanted to enter Tier 2/3 cities but was blocked.</li>
-                                        <li><strong>Royalties:</strong> Ting Hsin stopped paying the 1% fee, demanding 0.3% like rivals.</li>
-                                        <li><strong>Data Blackout:</strong> Ting Hsin sourced 40% from own factories. Stopped sharing financial data in 2012, breaking all trust.</li>
-                                        <li><strong>Lawsuit:</strong> FM sues in Cayman Islands (2018) for dissolution. Leads to 5-year deadlock.</li>
-                                    </ul>
+                                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                    <div className="w-12 h-12 bg-red-50 text-red-600 rounded-full flex items-center justify-center mb-5 text-xl border border-red-100"><i className="fas fa-link-slash"></i></div>
+                                    <h4 className="font-bold text-slate-800 mb-3 text-lg">Supply Chain Risks</h4>
+                                    <p className="text-sm text-slate-600 leading-relaxed">Letting the local partner manage the entire supply chain is highly risky. This allows them to capture profits internally (via transfer pricing to their own factories) before the money ever reaches the Joint Venture's bank account.</p>
                                 </div>
-                            </div>
-
-                            {/* Speaker 3 */}
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-t-4 border-t-blue-500">
-                                <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{t("Speaker 3", "ผู้พูดที่ 3")}</div>
-                                <h3 className="text-xl font-bold text-slate-800 mb-4">{t("The Resolution", "บทสรุปและการวิเคราะห์")}</h3>
-                                <div className="space-y-4">
-                                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                        <h4 className="text-xs font-bold text-slate-700 mb-1">{t("Objective:", "เป้าหมาย:")}</h4>
-                                        <p className="text-xs text-slate-600">{t("Use frameworks to explain why it broke down and why they settled in 2024.", "ใช้เฟรมเวิร์กอธิบายว่าทำไมถึงพัง และทำไมถึงยอมความในปี 2024")}</p>
-                                    </div>
-                                    <ul className="text-sm text-slate-700 space-y-2 list-disc pl-4">
-                                        <li><strong>Alliance Evolution:</strong> Over 20 years, Ting Hsin "learned" the business (Asymmetric Learning). FM's know-how lost value. Power shifted.</li>
-                                        <li><strong>BATNA Analysis:</strong> A full divorce was catastrophic for both. FM loses supply chain; Ting Hsin loses the brand.</li>
-                                        <li><strong>2024 Deal:</strong> A logical restructuring. Ting Hsin gets East China cash-cow. FM gets the rest for digital strategies. A strategic Win-Win.</li>
-                                    </ul>
+                                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                    <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mb-5 text-xl border border-slate-200"><i className="fas fa-file-contract"></i></div>
+                                    <h4 className="font-bold text-slate-800 mb-3 text-lg">Effective Divorce Clauses</h4>
+                                    <p className="text-sm text-slate-600 leading-relaxed">JVs need practical 'divorce' clauses for when trust breaks down. Standard winding-up (dissolution) clauses are incredibly slow, expensive, and legally difficult to force on a financially successful enterprise.</p>
                                 </div>
                             </div>
                         </div>
